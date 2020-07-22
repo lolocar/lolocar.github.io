@@ -1,45 +1,126 @@
-<!DOCTYPE html>
-<!-- saved from url=(0046)http://ocrdetect.qq.com/ocrdetect/ambient.html -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <title>Ambient Light Sensor</title>
- 
-  </head>
-  <body class="brightLight">
-    <h1>Ambient Light Sensor</h1>
-    <p>Current Light Levels</p>
-    <div id="details">It looks like your browser doesnt support this feature</div>  
+<!DOCTYPE html> 
+<html> 
+<body> 
+
+ <video controls id="myVideo">
+    <source src="https://storage.googleapis.com/webfundamentals-assets/videos/chrome.webm" type="video/webm">
+    <source src="https://storage.googleapis.com/webfundamentals-assets/videos/chrome.mp4" type="video/mp4">
+    <p>This browser does not support the video element.</p>
+  </video>
+
+
+<table><tr><td>Video Time</td><td><p id="input2">0</p></td><td> / Speed</td><td><p id="input1">1.0</p></td></tr></table>
+<script>
+	/*<table>
+<tr><td>Start</td><td>Stop</td><td>Speed</td></tr>
+<tr><td>861</td><td>906</td><td>2.0</td></tr>
+<tr><td>974</td><td>1016</td><td>2.0</td></tr>
+<tr><td>1047</td><td>1186</td><td>2.0</td></tr>
+<tr><td>1212</td><td>1260</td><td>2.0</td></tr>
+<tr><td>1269</td><td>1322</td><td>2.0</td></tr>
+<tr><td>1344</td><td>1598</td><td>2.0</td></tr>
+<tr><td>1791</td><td>1813</td><td>2.0</td></tr>
+<tr><td>1956</td><td>1984</td><td>2.0</td></tr>
+<tr><td>2277</td><td>2338</td><td>2.0</td></tr>
+<tr><td>2350</td><td>2371</td><td>2.0</td></tr></table>
+*/
+</script>
+<style type="text/css">
+.green {
+    color: #00FF00;
+    border-style: none;
+}
+.yellow {
+    color: #a87f32;
+    border-style: none;
+}
+.black {
+    color: #000000;
+    border-style: none;
+}
+
+</style>
+
+<script>
+var vid = document.getElementById("myVideo");
+
+vid.addEventListener("timeupdate",function(){
+    var timeDisplay;
+	timeDisplay = Math.floor(vid.currentTime);
+	console.log(Math.floor(vid.currentTime));
+/*	if(timeDisplay<108) {	setPlaySpeed(2.0);
+} else if(timeDisplay>861 && timeDisplay<906) { setPlaySpeed(2.0)
+} else if(timeDisplay>974 && timeDisplay<1016) { setPlaySpeed(2.0)
+} else if(timeDisplay>1047 && timeDisplay<1186) { setPlaySpeed(2.0)
+} else if(timeDisplay>1212 && timeDisplay<1260) { setPlaySpeed(2.0)
+} else if(timeDisplay>1269 && timeDisplay<1322) { setPlaySpeed(2.0)
+} else if(timeDisplay>1344 && timeDisplay<1598) { setPlaySpeed(2.0)
+} else if(timeDisplay>1791 && timeDisplay<1813) { setPlaySpeed(2.0)
+} else if(timeDisplay>1956 && timeDisplay<1984) { setPlaySpeed(2.0)
+} else if(timeDisplay>2277 && timeDisplay<2338) { setPlaySpeed(2.0)
+} else if(timeDisplay>2350 && timeDisplay<2371) { setPlaySpeed(2.0)
+	} else { 
+		setPlaySpeed(1.2);
+	}
+  */	document.getElementById('input2').innerHTML = timeDisplay;
+
+},false);
+
+function getPlaySpeed() { 
+  alert(vid.playbackRate);
+} 
+
+function setPlaySpeed(x){ 
+  vid.playbackRate = x;
+  document.getElementById('input1').innerHTML = x;
+  if(x==1.2)
+  {
+	document.getElementById('input1').style.color = "red";
+  }
+  else if (x==2)
+  {
+  document.getElementById('input1').style.color = "green";  
+  }
+
+} 
+
+function setPlaySpeedFast() { 
+  vid.playbackRate = 2;
+} 
+function update(illuminance) {
+  document.getElementById("value").innerHTML = illuminance + " lux";
+
+  var colorPart = Math.min(255, illuminance).toFixed(0);
+  document.getElementById("box").style.backgroundColor =
+    "rgb(" + colorPart + ", " + colorPart + ", " + colorPart + ")";
+}
+
+if ("AmbientLightSensor" in window) {
+  try {
+    var sensor = new AmbientLightSensor();
+    sensor.addEventListener("reading", function (event) {
+      update(sensor.illuminance);
+      
+      vid.style.filter = "brightness("+(sensor.illuminance/70+80)+"%)";  
+    });
+    sensor.start();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+if ("ondevicelight" in window) {
+  function onUpdateDeviceLight(event) {
+    update(event.value);
+  }
   
-  <script>
-    const details = document.getElementById("details");
-    
-    // Feature detection
-    if (window.AmbientLightSensor){
-        try{
-          const sensor = new AmbientLightSensor();
+  window.addEventListener("devicelight", onUpdateDeviceLight);
+}
+</script> 
+<div><p>Current light intensity is <b id="value">unknown</b>.</p>
 
-          // Detect changes in the light
-          sensor.onreading = () => {
-            details.innerHTML = sensor.illuminance;
-            
-              // Read the light levels in lux 
-              // < 50 is dark room
-              if (sensor.illuminance < 50) {
-                document.body.className = 'darkLight';
-              } else {
-                document.body.className = 'brightLight';
-              }
-          }
-          
-          // Has an error occured?
-          sensor.onerror = event => document.getElementById("details").innerHTML = event.error.message;
-          sensor.start();
-        } catch(err) {
-          details.innerHTML = err.message;
-        }
-    } else {
-      details.innerHTML = 'It looks like your browser doesnt support this feature'; 
-    }
-
-  </script>
-</body></html>
+<div id="box"></div>
+<p>TEST.</p>
+chrome://flags/#enable-generic-sensor
+</body> 
+</html>
