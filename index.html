@@ -108,8 +108,8 @@ if ("AmbientLightSensor" in window) {
     sensor.addEventListener("reading", function (event) {
       update(sensor.illuminance);
       var adjustment = Math.sqrt(sensor.illuminance)*2.5+50;
-	  if(adjustment>300)
-		adjustment=300;
+	  if(adjustment>200)
+		adjustment=200;
       vid.style.filter = "brightness("+adjustment+"%)";  
     });
     sensor.start();
