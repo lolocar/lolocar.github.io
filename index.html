@@ -10,7 +10,7 @@ body {
 </head>
 <body> 
 
- <video controls id="myVideo" width="1280" >
+ <video controls id="myVideo" width="960" >
     <source src="test.webm" type="video/webm">
     <p>This browser does not support the video element.</p>
   </video>
@@ -107,9 +107,10 @@ if ("AmbientLightSensor" in window) {
     var sensor = new AmbientLightSensor();
     sensor.addEventListener("reading", function (event) {
       update(sensor.illuminance);
-      var adjustment = Math.sqrt(sensor.illuminance)*2+60;
-	  if(adjustment>200)
-		adjustment=200;
+      var adjustment = Math.sqrt(sensor.illuminance)*2+70;
+	  if(adjustment>150)
+		adjustment=150;
+//      vid.style.filter = "brightness("+adjustment+"%)";  
       vid.style.filter = "brightness("+adjustment+"%)";  
     });
     sensor.start();
