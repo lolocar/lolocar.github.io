@@ -21,7 +21,7 @@ body {
   <input type="checkbox" id="dyn_contrast" name="dyn_contrast" onclick="update2()">
   <label for="dyn_contrast"> Contrast</label>
   <input type="checkbox" id="dyn_saturation" name="dyn_saturation" onclick="update2()">
-  <label for="dyn_saturation"> Saturation</label><br>
+  <label for="dyn_saturation"> Sepia</label><br>
 </form>
 
 <table><tr><td>Video Time</td><td><p id="input2">0</p></td><td> / Speed</td><td><p id="input1">1.0</p></td></tr></table>
@@ -87,11 +87,11 @@ function update2() {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
-  var adjustment_s = 30-illuminance/100*30;
+  var adjustment_s = 60-illuminance/100*60;
   if(document.getElementById("dyn_saturation").checked==false)
 	adjustment_s=0;
-  if(adjustment_s>30)
-	adjustment_s=30;
+  if(adjustment_s>60)
+	adjustment_s=60;
   if(adjustment_s<=0)
 	adjustment_s=0;
 	
@@ -118,11 +118,11 @@ function update(illuminance) {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
-  var adjustment_s = 30-illuminance/100*30;
+  var adjustment_s = 60-illuminance/100*60;
   if(document.getElementById("dyn_saturation").checked==false)
 	adjustment_s=0;
-  if(adjustment_s>30)
-	adjustment_s=30;
+  if(adjustment_s>60)
+	adjustment_s=60;
   if(adjustment_s<=0)
 	adjustment_s=0;
 	
