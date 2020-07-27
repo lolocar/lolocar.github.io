@@ -75,7 +75,7 @@ function setPlaySpeedFast() {
 } 
 
 function update2() {
-  var illuminance = document.getElementById("value_lux").parseInt();
+  var illuminance = parseInt(document.getElementById("value_lux").innerHTML);
       
   var adjustment_b = Math.sqrt(illuminance)*2+70;	  
   
