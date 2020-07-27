@@ -11,27 +11,21 @@ body {
 <body> 
 
  <video controls id="myVideo" width="640" >
-    <source src="test.webm" type="video/webm">
+    <source src="test.mp4" type="video/mp4">
     <p>This browser does not support the video element.</p>
   </video>
 
+<form>
+  <input type="checkbox" id="dyn_bright" name="dyn_bright">
+  <label for="dyn_bright"> Brightness</label>
+  <input type="checkbox" id="dyn_contrast" name="dyn_contrast">
+  <label for="dyn_contrast"> Contrast</label>
+  <input type="checkbox" id="dyn_saturation" name="dyn_saturation">
+  <label for="dyn_saturation"> Saturation</label><br>
+</form>
 
 <table><tr><td>Video Time</td><td><p id="input2">0</p></td><td> / Speed</td><td><p id="input1">1.0</p></td></tr></table>
-<script>
-	/*<table>
-<tr><td>Start</td><td>Stop</td><td>Speed</td></tr>
-<tr><td>861</td><td>906</td><td>2.0</td></tr>
-<tr><td>974</td><td>1016</td><td>2.0</td></tr>
-<tr><td>1047</td><td>1186</td><td>2.0</td></tr>
-<tr><td>1212</td><td>1260</td><td>2.0</td></tr>
-<tr><td>1269</td><td>1322</td><td>2.0</td></tr>
-<tr><td>1344</td><td>1598</td><td>2.0</td></tr>
-<tr><td>1791</td><td>1813</td><td>2.0</td></tr>
-<tr><td>1956</td><td>1984</td><td>2.0</td></tr>
-<tr><td>2277</td><td>2338</td><td>2.0</td></tr>
-<tr><td>2350</td><td>2371</td><td>2.0</td></tr></table>
-*/
-</script>
+
 <style type="text/css">
 .green {
     color: #00FF00;
@@ -108,6 +102,9 @@ if ("AmbientLightSensor" in window) {
     sensor.addEventListener("reading", function (event) {
       update(sensor.illuminance);
       var adjustment = Math.sqrt(sensor.illuminance)*2+70;
+	  
+	  if（document.getElementById("dyn_bright").checked==false）
+		adjustment=100;
 	  if(adjustment>150)
 		adjustment=150;
 //      vid.style.filter = "brightness("+adjustment+"%)";  
