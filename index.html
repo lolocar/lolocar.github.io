@@ -99,8 +99,8 @@ function update(illuminance) {
 	adjustment_b=100;
   if(adjustment_b>150)
 	adjustment_b=150;
-  vid.style.filter = "brightness("+adjustment_b+"%)";  
-  document.getElementById("value_b").innerHTML = adjustment_b + " %";
+  vid.style.filter = "brightness( "+adjustment_b+"%)";  
+  document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
 	  
   var colorPart = Math.min(255, illuminance).toFixed(0);
   document.getElementById("box").style.backgroundColor =
