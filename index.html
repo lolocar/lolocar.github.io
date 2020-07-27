@@ -82,7 +82,7 @@ function update2() {
 	adjustment_b=100;
   if(adjustment_b>120)
 	adjustment_b=120;
-  var adjustment_c = Math.pow(illuminance,0.4)/26*40+80;	  
+  var adjustment_c = Math.pow(illuminance,0.4)/26*30+90;	  
   if(document.getElementById("dyn_contrast").checked==false)
 	adjustment_c=100;
   if(adjustment_c>120)
@@ -100,12 +100,12 @@ function update2() {
 function update(illuminance) {
   document.getElementById("value_lux").innerHTML = illuminance + " lux";
       
-  var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;	  
+  var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
   if(document.getElementById("dyn_bright").checked==false)
 	adjustment_b=100;
   if(adjustment_b>120)
 	adjustment_b=120;
-  var adjustment_c = Math.pow(illuminance,0.4)/26*40+80;
+  var adjustment_c = Math.pow(illuminance,0.4)/26*30+90;	  
   if(document.getElementById("dyn_contrast").checked==false)
 	adjustment_c=100;
   if(adjustment_c>120)
