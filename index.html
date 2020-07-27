@@ -18,9 +18,9 @@ body {
 <form>
   <input type="checkbox" id="dyn_bright" name="dyn_bright" onclick="update2()">
   <label for="dyn_bright"> Brightness</label>
-  <input type="checkbox" id="dyn_contrast" name="dyn_contrast">
+  <input type="checkbox" id="dyn_contrast" name="dyn_contrast" onclick="update2()>
   <label for="dyn_contrast"> Contrast</label>
-  <input type="checkbox" id="dyn_saturation" name="dyn_saturation">
+  <input type="checkbox" id="dyn_saturation" name="dyn_saturation" onclick="update2()>
   <label for="dyn_saturation"> Saturation</label><br>
 </form>
 
@@ -88,7 +88,7 @@ function update2() {
   if(adjustment_c>150)
 	adjustment_c=150;
 	
-  vid.style.filter = "\"brightness("+adjustment_b+"%)\"+\"contrast("+adjustment_c+"%)\"";  
+  vid.style.filter = "'brightness("+adjustment_b+"%)'"+"'contrast("+adjustment_c+"%)'";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
   document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
 	  
