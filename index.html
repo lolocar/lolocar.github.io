@@ -87,7 +87,7 @@ function update2() {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
-  var adjustment_s = Math.pow(illuminance,0.4)/26*30+80;	  
+  var adjustment_s = Math.pow(illuminance,0.4)/26*80+60;	  
   if(document.getElementById("dyn_saturation").checked==false)
 	adjustment_s=100;
   if(adjustment_s>120)
@@ -116,7 +116,7 @@ function update(illuminance) {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
-  var adjustment_s = Math.pow(illuminance,0.4)/26*30+80;	  
+  var adjustment_s = Math.pow(illuminance,0.4)/26*80+60;	  
   if(document.getElementById("dyn_saturation").checked==false)
 	adjustment_s=100;
   if(adjustment_s>120)
