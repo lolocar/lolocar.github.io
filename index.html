@@ -87,11 +87,13 @@ function update2() {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
-  var adjustment_s = Math.pow(illuminance,0.4)/26*80+60;	  
+  var adjustment_s = 30-illuminance/100*30;
   if(document.getElementById("dyn_saturation").checked==false)
-	adjustment_s=100;
-  if(adjustment_s>140)
-	adjustment_s=140;
+	adjustment_s=0;
+  if(adjustment_s>30)
+	adjustment_s=30;
+  if(adjustment_s<=0)
+	adjustment_s=0;
 	
   vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"saturate("+adjustment_s+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
@@ -116,11 +118,13 @@ function update(illuminance) {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
-  var adjustment_s = Math.pow(illuminance,0.4)/26*80+60;	  
+  var adjustment_s = 30-illuminance/100*30;
   if(document.getElementById("dyn_saturation").checked==false)
-	adjustment_s=100;
-  if(adjustment_s>140)
-	adjustment_s=140;
+	adjustment_s=0;
+  if(adjustment_s>30)
+	adjustment_s=30;
+  if(adjustment_s<=0)
+	adjustment_s=0;
 	
   vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"saturate("+adjustment_s+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
@@ -155,7 +159,7 @@ if ("ondevicelight" in window) {
 <div><p>Current light intensity is <b id="value_lux">unknown</b>.</p>
 <div><p>Current brightness <b id="value_b">unknown</b>.</p>
 <div><p>Current contrast <b id="value_c">unknown</b>.</p>
-<div><p>Current saturation <b id="value_s">unknown</b>.</p>
+<div><p>Current sepia <b id="value_s">unknown</b>.</p>
 <div id="box"></div>
 <p>TEST.</p>
 chrome://flags/#enable-generic-sensor
