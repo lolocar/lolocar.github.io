@@ -16,7 +16,7 @@ body {
   </video>
 
 <form>
-  <input type="checkbox" id="dyn_bright" name="dyn_bright">
+  <input type="checkbox" id="dyn_bright" name="dyn_bright" onclick="update2()">
   <label for="dyn_bright"> Brightness</label>
   <input type="checkbox" id="dyn_contrast" name="dyn_contrast">
   <label for="dyn_contrast"> Contrast</label>
@@ -73,6 +73,24 @@ function setPlaySpeed(x){
 function setPlaySpeedFast() { 
   vid.playbackRate = 2;
 } 
+
+function update2() {
+  document.getElementById("value_lux").innerHTML = illuminance + " lux";
+      
+  var adjustment_b = Math.sqrt(illuminance)*2+70;	  
+  
+  if(document.getElementById("dyn_bright").checked==false)
+	adjustment_b=100;
+  if(adjustment_b>150)
+	adjustment_b=150;
+  vid.style.filter = "brightness("+adjustment_b+"%)";  
+  document.getElementById("value_b").innerHTML = adjustment_b + " %";
+	  
+  var colorPart = Math.min(255, illuminance).toFixed(0);
+  document.getElementById("box").style.backgroundColor =
+    "rgb(" + colorPart + ", " + colorPart + ", " + colorPart + ")";
+}
+
 function update(illuminance) {
   document.getElementById("value_lux").innerHTML = illuminance + " lux";
       
