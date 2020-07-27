@@ -78,13 +78,19 @@ function update2() {
   var illuminance = parseInt(document.getElementById("value_lux").innerHTML);
       
   var adjustment_b = Math.sqrt(illuminance)*2+70;	  
-  
   if(document.getElementById("dyn_bright").checked==false)
 	adjustment_b=100;
   if(adjustment_b>150)
 	adjustment_b=150;
-  vid.style.filter = "brightness("+adjustment_b+"%)";  
-  document.getElementById("value_b").innerHTML = adjustment_b + " %";
+  var adjustment_c = Math.sqrt(illuminance)*2+70;	  
+  if(document.getElementById("dyn_contrast").checked==false)
+	adjustment_c=100;
+  if(adjustment_c>150)
+	adjustment_c=150;
+	
+  vid.style.filter = "brightness("+adjustment_b+"%)+contrast("+adjustment_c+"%)";  
+  document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
+  document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
 	  
   var colorPart = Math.min(255, illuminance).toFixed(0);
   document.getElementById("box").style.backgroundColor =
@@ -99,8 +105,15 @@ function update(illuminance) {
 	adjustment_b=100;
   if(adjustment_b>150)
 	adjustment_b=150;
-  vid.style.filter = "brightness( "+adjustment_b+"%)";  
+  var adjustment_c = Math.sqrt(sensor.illuminance)*2+70;	  
+  if(document.getElementById("dyn_contrast").checked==false)
+	adjustment_c=100;
+  if(adjustment_c>150)
+	adjustment_c=150;
+	
+  vid.style.filter = "brightness("+adjustment_b+"%)+contrast("+adjustment_c+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
+  document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
 	  
   var colorPart = Math.min(255, illuminance).toFixed(0);
   document.getElementById("box").style.backgroundColor =
@@ -128,7 +141,9 @@ if ("ondevicelight" in window) {
 }
 </script> 
 <div><p>Current light intensity is <b id="value_lux">unknown</b>.</p>
-<div><p>Current brightness<b id="value_b">unknown</b>.</p>
+<div><p>Current brightness <b id="value_b">unknown</b>.</p>
+<div><p>Current contrast <b id="value_c">unknown</b>.</p>
+<div><p>Current saturation <b id="value_s">unknown</b>.</p>
 <div id="box"></div>
 <p>TEST.</p>
 chrome://flags/#enable-generic-sensor
