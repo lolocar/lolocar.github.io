@@ -49,22 +49,7 @@ vid.addEventListener("timeupdate",function(){
     var timeDisplay;
 	timeDisplay = Math.floor(vid.currentTime);
 	console.log(Math.floor(vid.currentTime));
-/*	if(timeDisplay<108) {	setPlaySpeed(2.0);
-} else if(timeDisplay>861 && timeDisplay<906) { setPlaySpeed(2.0)
-} else if(timeDisplay>974 && timeDisplay<1016) { setPlaySpeed(2.0)
-} else if(timeDisplay>1047 && timeDisplay<1186) { setPlaySpeed(2.0)
-} else if(timeDisplay>1212 && timeDisplay<1260) { setPlaySpeed(2.0)
-} else if(timeDisplay>1269 && timeDisplay<1322) { setPlaySpeed(2.0)
-} else if(timeDisplay>1344 && timeDisplay<1598) { setPlaySpeed(2.0)
-} else if(timeDisplay>1791 && timeDisplay<1813) { setPlaySpeed(2.0)
-} else if(timeDisplay>1956 && timeDisplay<1984) { setPlaySpeed(2.0)
-} else if(timeDisplay>2277 && timeDisplay<2338) { setPlaySpeed(2.0)
-} else if(timeDisplay>2350 && timeDisplay<2371) { setPlaySpeed(2.0)
-	} else { 
-		setPlaySpeed(1.2);
-	}
-  */	document.getElementById('input2').innerHTML = timeDisplay;
-
+	document.getElementById('input2').innerHTML = timeDisplay;
 },false);
 
 function getPlaySpeed() { 
@@ -89,8 +74,16 @@ function setPlaySpeedFast() {
   vid.playbackRate = 2;
 } 
 function update(illuminance) {
-  document.getElementById("value").innerHTML = illuminance + " lux";
-
+  document.getElementById("value_lux").innerHTML = illuminance + " lux";
+      
+  var adjustment_b = Math.sqrt(sensor.illuminance)*2+70;	  
+  if(document.getElementById("dyn_bright").checked==false)
+	adjustment_b=100;
+  if(adjustment_b>150)
+	adjustment_b=150;
+  vid.style.filter = "brightness("+adjustment_b+"%)";  
+  document.getElementById("value_b").innerHTML = adjustment_b + " %";
+	  
   var colorPart = Math.min(255, illuminance).toFixed(0);
   document.getElementById("box").style.backgroundColor =
     "rgb(" + colorPart + ", " + colorPart + ", " + colorPart + ")";
@@ -101,14 +94,6 @@ if ("AmbientLightSensor" in window) {
     var sensor = new AmbientLightSensor();
     sensor.addEventListener("reading", function (event) {
       update(sensor.illuminance);
-      var adjustment = Math.sqrt(sensor.illuminance)*2+70;
-	  
-	  if(document.getElementById("dyn_bright").checked==false)
-		adjustment=100;
-	  if(adjustment>150)
-		adjustment=150;
-//      vid.style.filter = "brightness("+adjustment+"%)";  
-      vid.style.filter = "brightness("+adjustment+"%)";  
     });
     sensor.start();
   } catch (e) {
@@ -124,8 +109,8 @@ if ("ondevicelight" in window) {
   window.addEventListener("devicelight", onUpdateDeviceLight);
 }
 </script> 
-<div><p>Current light intensity is <b id="value">unknown</b>.</p>
-
+<div><p>Current light intensity is <b id="value_lux">unknown</b>.</p>
+<div><p>Current brightness<b id="value_b">unknown</b>.</p>
 <div id="box"></div>
 <p>TEST.</p>
 chrome://flags/#enable-generic-sensor
