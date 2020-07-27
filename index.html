@@ -85,8 +85,8 @@ function update2() {
   var adjustment_c = Math.sqrt(illuminance)*2+80;	  
   if(document.getElementById("dyn_contrast").checked==false)
 	adjustment_c=100;
-  if(adjustment_c>130)
-	adjustment_c=130;
+  if(adjustment_c>120)
+	adjustment_c=120;
 	
     vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
