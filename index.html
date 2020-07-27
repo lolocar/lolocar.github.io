@@ -87,11 +87,11 @@ function update2() {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
-  var adjustment_s = Math.pow(illuminance,0.4)/26*80+60;	  
+  var adjustment_s = Math.pow(illuminance,0.4)/26*120+40;	  
   if(document.getElementById("dyn_saturation").checked==false)
 	adjustment_s=100;
-  if(adjustment_s>120)
-	adjustment_s=120;
+  if(adjustment_s>160)
+	adjustment_s=160;
 	
   vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"saturation("+adjustment_s+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
@@ -116,11 +116,11 @@ function update(illuminance) {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
-  var adjustment_s = Math.pow(illuminance,0.4)/26*80+60;	  
+  var adjustment_s = Math.pow(illuminance,0.4)/26*120+40;	  
   if(document.getElementById("dyn_saturation").checked==false)
 	adjustment_s=100;
-  if(adjustment_s>120)
-	adjustment_s=120;
+  if(adjustment_s>160)
+	adjustment_s=160;
 	
   vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"saturation("+adjustment_s+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
