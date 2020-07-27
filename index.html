@@ -5,6 +5,7 @@
 body {
   background-color: #111111;
   color: green;
+  font-size: xx-large;
 }
 </style>
 </head>
@@ -39,7 +40,13 @@ body {
     color: #000000;
     border-style: none;
 }
-
+#box {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #000;
+  margin-left: 10px;
+}
+          
 </style>
 
 <script>
@@ -157,11 +164,8 @@ if ("ondevicelight" in window) {
 }
 </script> 
 <div><p>Current light intensity is <b id="value_lux">unknown</b>.</p>
-<div><p>Current brightness <b id="value_b">unknown</b>.</p>
-<div><p>Current contrast <b id="value_c">unknown</b>.</p>
-<div><p>Current sepia <b id="value_s">unknown</b>.</p>
-<div id="box"></div>
-<p>TEST.</p>
+<div><p>Current brightness <b id="value_b">unknown</b>.</p> <div><p>Current contrast <b id="value_c">unknown</b>.</p>
+<div><p>Current sepia <b id="value_s">unknown</b>.</p> <div id="box"> </div>
 chrome://flags/#enable-generic-sensor
 </body> 
 </html>
