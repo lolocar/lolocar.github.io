@@ -77,7 +77,7 @@ function setPlaySpeedFast() {
 function update2() {
   var illuminance = parseInt(document.getElementById("value_lux").innerHTML);
       
-  var adjustment_b = Math.sqrt(illuminance)*2+90;	  
+  var adjustment_b = Math.sqrt(illuminance)*2+80;	  
   if(document.getElementById("dyn_bright").checked==false)
 	adjustment_b=100;
   if(adjustment_b>120)
