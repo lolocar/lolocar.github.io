@@ -103,7 +103,7 @@ if ("AmbientLightSensor" in window) {
       update(sensor.illuminance);
       var adjustment = Math.sqrt(sensor.illuminance)*2+70;
 	  
-	  if（document.getElementById("dyn_bright").checked==false）
+	  if(document.getElementById("dyn_bright").checked==false)
 		adjustment=100;
 	  if(adjustment>150)
 		adjustment=150;
