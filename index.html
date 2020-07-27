@@ -95,7 +95,7 @@ function update2() {
   if(adjustment_s<=0)
 	adjustment_s=0;
 	
-  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"saturate("+adjustment_s+"%)";  
+  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"sepia("+adjustment_s+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
   document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
   document.getElementById("value_s").innerHTML = adjustment_s.toFixed(2) + " %";
@@ -126,7 +126,7 @@ function update(illuminance) {
   if(adjustment_s<=0)
 	adjustment_s=0;
 	
-  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"saturate("+adjustment_s+"%)";  
+  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"sepia("+adjustment_s+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
   document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
   document.getElementById("value_s").innerHTML = adjustment_s.toFixed(2) + " %";
