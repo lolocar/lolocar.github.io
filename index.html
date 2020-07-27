@@ -1,33 +1,12 @@
 <!DOCTYPE html> 
 <html> 
 <head>
-<style>
+<style type="text/css">
 body {
   background-color: #111111;
   color: green;
   font-size: xx-large;
 }
-</style>
-</head>
-<body> 
-
- <video controls id="myVideo" width="640" >
-    <source src="test.webm" type="video/webm">
-    <p>This browser does not support the video element.</p>
-  </video>
-
-<form>
-  <input checked type="checkbox" id="dyn_bright" name="dyn_bright" onclick="update2()">
-  <label for="dyn_bright"> Brightness</label>
-  <input checked type="checkbox" id="dyn_contrast" name="dyn_contrast" onclick="update2()">
-  <label for="dyn_contrast"> Contrast</label>
-  <input type="checkbox" id="dyn_saturation" name="dyn_saturation" onclick="update2()">
-  <label for="dyn_saturation"> Sepia</label><br>
-</form>
-
-<table><tr><td>Video Time</td><td><p id="input2">0</p></td><td> / Speed</td><td><p id="input1">1.0</p></td></tr></table>
-
-<style type="text/css">
 .green {
     color: #00FF00;
     border-style: none;
@@ -46,40 +25,76 @@ body {
   border: 1px solid #000;
   margin-left: 10px;
 }
-          
 </style>
+</head>
+<body> 
+<div class="split left">
+	<div class="centered">
+		<video controls id="myVideo" width="640" >
+			<source src="test.webm" type="video/webm">
+			<p>This browser does not support the video element.</p>
+		</video>
+	</div>
+</div>
+
+<div class="split right">
+  <div class="centered">
+	<form>
+		<input checked type="checkbox" id="dyn_bright" name="dyn_bright" onclick="update2()">
+		<label for="dyn_bright"> 自适应亮度</label><br>
+		<input checked type="checkbox" id="dyn_contrast" name="dyn_contrast" onclick="update2()">
+		<label for="dyn_contrast"> 自适应对比度</label><br>
+		<input type="checkbox" id="dyn_sepia" name="dyn_sepia" onclick="update2()">
+		<label for="dyn_sepia"> 自适应“防蓝光”</label><br><br>
+	</form>
+
+	<table><tr><td>Video Time</td><td><p id="input2">0</p></td><td> / Speed</td><td><p id="input1">1.0</p></td></tr>
+	<tr><td><p>Current light intensity</td><td><b id="value_lux">unknown</b>.</p></td></tr>
+	<tr><td><p>Current brightness</td><td><b id="value_b">unknown</b>.</p> </td></tr>
+	<tr><td><p>Current contrast</td><td><b id="value_c">unknown</b>.</p></td></tr>
+	<tr><td><p>Current sepia</td><td><b id="value_s">unknown</b>.</p></td></tr>
+	</table>
+	chrome://flags/#enable-generic-sensor
+	<div id="box"> </div>
+  </div>
+</div>
+
+
+
+
+
 
 <script>
 var vid = document.getElementById("myVideo");
 
-vid.addEventListener("timeupdate",function(){
-    var timeDisplay;
-	timeDisplay = Math.floor(vid.currentTime);
-	console.log(Math.floor(vid.currentTime));
-	document.getElementById('input2').innerHTML = timeDisplay;
-},false);
-
-function getPlaySpeed() { 
-  alert(vid.playbackRate);
-} 
-
-function setPlaySpeed(x){ 
-  vid.playbackRate = x;
-  document.getElementById('input1').innerHTML = x;
-  if(x==1.2)
-  {
-	document.getElementById('input1').style.color = "red";
-  }
-  else if (x==2)
-  {
-  document.getElementById('input1').style.color = "green";  
-  }
-
-} 
-
-function setPlaySpeedFast() { 
-  vid.playbackRate = 2;
-} 
+//vid.addEventListener("timeupdate",function(){
+//    var timeDisplay;
+//	timeDisplay = Math.floor(vid.currentTime);
+//	console.log(Math.floor(vid.currentTime));
+//	document.getElementById('input2').innerHTML = timeDisplay;
+//},false);
+//
+//function getPlaySpeed() { 
+//  alert(vid.playbackRate);
+//} 
+//
+//function setPlaySpeed(x){ 
+//  vid.playbackRate = x;
+//  document.getElementById('input1').innerHTML = x;
+//  if(x==1.2)
+//  {
+//	document.getElementById('input1').style.color = "red";
+//  }
+//  else if (x==2)
+//  {
+//  document.getElementById('input1').style.color = "green";  
+//  }
+//
+//} 
+//
+//function setPlaySpeedFast() { 
+//  vid.playbackRate = 2;
+//} 
 
 function update2() {
   var illuminance = parseInt(document.getElementById("value_lux").innerHTML);
@@ -95,7 +110,7 @@ function update2() {
   if(adjustment_c>120)
 	adjustment_c=120;
   var adjustment_s = 40-illuminance/100*40;
-  if(document.getElementById("dyn_saturation").checked==false)
+  if(document.getElementById("dyn_sepia").checked==false)
 	adjustment_s=0;
   if(adjustment_s>40)
 	adjustment_s=40;
@@ -126,7 +141,7 @@ function update(illuminance) {
   if(adjustment_c>120)
 	adjustment_c=120;
   var adjustment_s = 40-illuminance/100*40;
-  if(document.getElementById("dyn_saturation").checked==false)
+  if(document.getElementById("dyn_sepia").checked==false)
 	adjustment_s=0;
   if(adjustment_s>40)
 	adjustment_s=40;
@@ -163,9 +178,6 @@ if ("ondevicelight" in window) {
   window.addEventListener("devicelight", onUpdateDeviceLight);
 }
 </script> 
-<div><p>Current light intensity is <b id="value_lux">unknown</b>.</p>
-<div><p>Current brightness <b id="value_b">unknown</b>.</p> <div><p>Current contrast <b id="value_c">unknown</b>.</p>
-<div><p>Current sepia <b id="value_s">unknown</b>.</p> <div id="box"> </div>
-chrome://flags/#enable-generic-sensor
+
 </body> 
 </html>
