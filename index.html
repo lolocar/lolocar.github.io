@@ -77,12 +77,12 @@ function setPlaySpeedFast() {
 function update2() {
   var illuminance = parseInt(document.getElementById("value_lux").innerHTML);
       
-  var adjustment_b = Math.sqrt(illuminance)*2+70;	  
+  var adjustment_b = Math.sqrt(illuminance)*2+50;	  
   if(document.getElementById("dyn_bright").checked==false)
 	adjustment_b=100;
-  if(adjustment_b>150)
+  if(adjustment_b>120)
 	adjustment_b=150;
-  var adjustment_c = Math.sqrt(illuminance)*2+70;	  
+  var adjustment_c = Math.sqrt(illuminance)*2+80;	  
   if(document.getElementById("dyn_contrast").checked==false)
 	adjustment_c=100;
   if(adjustment_c>150)
