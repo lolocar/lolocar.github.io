@@ -87,10 +87,16 @@ function update2() {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
+  var adjustment_s = Math.pow(illuminance,0.4)/26*30+80;	  
+  if(document.getElementById("dyn_saturation").checked==false)
+	adjustment_s=100;
+  if(adjustment_s>120)
+	adjustment_s=120;
 	
-    vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)";  
+  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"saturation("+adjustment_s+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
   document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
+  document.getElementById("value_s").innerHTML = adjustment_s.toFixed(2) + " %";
 	  
   var colorPart = Math.min(255, illuminance).toFixed(0);
   document.getElementById("box").style.backgroundColor =
@@ -110,10 +116,16 @@ function update(illuminance) {
 	adjustment_c=100;
   if(adjustment_c>120)
 	adjustment_c=120;
+  var adjustment_s = Math.pow(illuminance,0.4)/26*30+80;	  
+  if(document.getElementById("dyn_saturation").checked==false)
+	adjustment_s=100;
+  if(adjustment_s>120)
+	adjustment_s=120;
 	
-  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)";  
+  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"saturation("+adjustment_s+"%)";  
   document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
   document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
+  document.getElementById("value_s").innerHTML = adjustment_s.toFixed(2) + " %";
 	  
   var colorPart = Math.min(255, illuminance).toFixed(0);
   document.getElementById("box").style.backgroundColor =
