@@ -74,7 +74,8 @@ body {
 	</form>
 
 	<table>
-	<tr><td>环境亮度</td><td><input type='number' id='value_lux' min='0' max='10000' value='400' step='50' onchange="update2()">lux.</input></td></tr>
+	<tr><td>环境亮度（模拟）</td><td><input type='number' id='value_lux_e' min='0' max='10000' value='400' step='50' onchange="update2()">lux.</input></td></tr>
+	<tr><td>环境亮度</td><td><b id="value_lux">unknown</b>.</td></tr>
 	<tr><td>亮度调整</td><td><b id="value_b">unknown</b>.</td></tr>
 	<tr><td>对比度调整</td><td><b id="value_c">unknown</b>.</td></tr>
 	<tr><td>褐度调整</td><td><b id="value_s">unknown</b>.</td></tr>
@@ -99,7 +100,7 @@ function update2() {
   if(document.getElementById("sense_ambient").checked==true)
 	document.getElementById("value_lux").value = illuminance;
   else
-	document.getElementById("value_lux").value = 400;
+	document.getElementById("value_lux").value = value_lux_e;
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
   if(document.getElementById("dyn_bright").checked==false)
@@ -133,7 +134,7 @@ function update(illuminance) {
   if(document.getElementById("sense_ambient").checked==true)
 	document.getElementById("value_lux").value = illuminance;
   else
-	document.getElementById("value_lux").value = 400;
+	document.getElementById("value_lux").value = value_lux_e;
 	
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
