@@ -95,6 +95,11 @@ var vid = document.getElementById("myVideo");
 
 function update2() {
   var illuminance = parseInt(document.getElementById("value_lux").value);
+
+  if(document.getElementById("sense_ambient").checked==true)
+	document.getElementById("value_lux").value = illuminance;
+  else
+	document.getElementById("value_lux").value = 400;
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
   if(document.getElementById("dyn_bright").checked==false)
@@ -125,7 +130,11 @@ function update2() {
 }
 
 function update(illuminance) {
-  document.getElementById("value_lux").value = illuminance;
+  if(document.getElementById("sense_ambient").checked==true)
+	document.getElementById("value_lux").value = illuminance;
+  else
+	document.getElementById("value_lux").value = 400;
+	
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
   if(document.getElementById("dyn_bright").checked==false)
