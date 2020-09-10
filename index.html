@@ -62,16 +62,19 @@ body {
 <div class="split right">
   <div class="centered">
 	<form>
+		<input type="checkbox" id="sense_ambient" name="sense_ambient" onclick="update2()">
+		<label for="sense_ambient"> 环境光检测</label><br><br>
 		<input checked type="checkbox" id="dyn_bright" name="dyn_bright" onclick="update2()">
 		<label for="dyn_bright"> 自适应亮度</label><br>
 		<input checked type="checkbox" id="dyn_contrast" name="dyn_contrast" onclick="update2()">
 		<label for="dyn_contrast"> 自适应对比度</label><br>
 		<input type="checkbox" id="dyn_sepia" name="dyn_sepia" onclick="update2()">
 		<label for="dyn_sepia"> 自适应“防蓝光”</label><br><br>
+
 	</form>
 
 	<table>
-	<tr><td>环境亮度</td><td><b id="value_lux">unknown</b>.</td></tr>
+	<tr><td>环境亮度</td><td><input type='number' id='value_lux' min='0' max='10000' value='400' step='50' onchange="update2()">lux.</input></td></tr>
 	<tr><td>亮度调整</td><td><b id="value_b">unknown</b>.</td></tr>
 	<tr><td>对比度调整</td><td><b id="value_c">unknown</b>.</td></tr>
 	<tr><td>褐度调整</td><td><b id="value_s">unknown</b>.</td></tr>
@@ -122,7 +125,7 @@ function update2() {
 }
 
 function update(illuminance) {
-  document.getElementById("value_lux").innerHTML = illuminance + " lux";
+  document.getElementById("value_lux").innerHTML = illuminance;
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
   if(document.getElementById("dyn_bright").checked==false)
