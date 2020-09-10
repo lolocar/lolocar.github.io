@@ -75,7 +75,7 @@ body {
 
 	<table>
 	<tr><td>环境亮度（模拟）</td><td><input type='number' id='value_lux_e' min='0' max='10000' value='400' step='50' onchange="update2()">lux.</input></td></tr>
-	<tr><td>环境亮度</td><td><b id="value_lux">unknown</b>.</td></tr>
+	<tr><td>环境亮度（传感器）</td><td><b id="value_lux">unknown</b>.</td></tr>
 	<tr><td>亮度调整</td><td><b id="value_b">unknown</b>.</td></tr>
 	<tr><td>对比度调整</td><td><b id="value_c">unknown</b>.</td></tr>
 	<tr><td>褐度调整</td><td><b id="value_s">unknown</b>.</td></tr>
@@ -100,12 +100,12 @@ function update2() {
   if(document.getElementById("sense_ambient").checked==false)
 	illuminance = document.getElementById("value_lux_e").value;
       
-  var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
+  var adjustment_b = Math.pow(illuminance,0.45)/32*40+80;
   if(document.getElementById("dyn_bright").checked==false)
 	adjustment_b=100;
   if(adjustment_b>120)
 	adjustment_b=120;
-  var adjustment_c = Math.pow(illuminance,0.4)/26*30+90;	  
+  var adjustment_c = Math.pow(illuminance,0.6)/120*30+90;	  
   if(document.getElementById("dyn_contrast").checked==false)
 	adjustment_c=100;
   if(adjustment_c>120)
@@ -137,12 +137,12 @@ function update(illuminance) {
 
 	
       
-  var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
+  var adjustment_b = Math.pow(illuminance,0.45)/32*40+80;
   if(document.getElementById("dyn_bright").checked==false)
 	adjustment_b=100;
   if(adjustment_b>120)
 	adjustment_b=120;
-  var adjustment_c = Math.pow(illuminance,0.4)/26*30+90;	  
+  var adjustment_c = Math.pow(illuminance,0.6)/120*30+90;  
   if(document.getElementById("dyn_contrast").checked==false)
 	adjustment_c=100;
   if(adjustment_c>120)
