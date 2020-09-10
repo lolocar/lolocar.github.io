@@ -95,12 +95,10 @@ body {
 var vid = document.getElementById("myVideo");
 
 function update2() {
-  var illuminance = parseInt(document.getElementById("value_lux").value);
+  var illuminance = parseInt(document.getElementById("value_lux").innerHTML);
 
-  if(document.getElementById("sense_ambient").checked==true)
-	document.getElementById("value_lux").value = illuminance;
-  else
-	document.getElementById("value_lux").value = value_lux_e;
+  if(document.getElementById("sense_ambient").checked==false)
+	illuminance = document.getElementById("value_lux_e").value;
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
   if(document.getElementById("dyn_bright").checked==false)
@@ -131,10 +129,12 @@ function update2() {
 }
 
 function update(illuminance) {
-  if(document.getElementById("sense_ambient").checked==true)
-	document.getElementById("value_lux").value = illuminance;
-  else
-	document.getElementById("value_lux").value = value_lux_e;
+
+  document.getElementById("value_lux").innerHTML = illuminance;
+
+  if(document.getElementById("sense_ambient").checked==false)
+	illuminance = document.getElementById("value_lux_e").value;
+
 	
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
