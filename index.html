@@ -62,7 +62,7 @@ body {
 <div class="split right">
   <div class="centered">
 	<form>
-		<input type="checkbox" id="sense_ambient" name="sense_ambient" onclick="update2()">
+		<input checked type="checkbox" id="sense_ambient" name="sense_ambient" onclick="update2()">
 		<label for="sense_ambient"> 环境光检测</label><br><br>
 		<input checked type="checkbox" id="dyn_bright" name="dyn_bright" onclick="update2()">
 		<label for="dyn_bright"> 自适应亮度</label><br>
@@ -94,7 +94,7 @@ body {
 var vid = document.getElementById("myVideo");
 
 function update2() {
-  var illuminance = parseInt(document.getElementById("value_lux").innerHTML);
+  var illuminance = parseInt(document.getElementById("value_lux").value);
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
   if(document.getElementById("dyn_bright").checked==false)
@@ -125,7 +125,7 @@ function update2() {
 }
 
 function update(illuminance) {
-  document.getElementById("value_lux").innerHTML = illuminance;
+  document.getElementById("value_lux").value = illuminance;
       
   var adjustment_b = Math.pow(illuminance,0.4)/26*40+80;
   if(document.getElementById("dyn_bright").checked==false)
