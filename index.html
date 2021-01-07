@@ -71,6 +71,7 @@
 			} 
 			v.setAttribute("width", "480");
 			v.setAttribute("height", "360");
+			v.setAttribute("id", "myvideo");
 			v.setAttribute("controls", "controls");
 			document.body.appendChild(v);
 			
@@ -183,7 +184,7 @@
 			var listener = new THREE.AudioListener();
 			camera.add( listener );
 
-			var audioElement = document.getElementById( 'iframe' );
+			var audioElement = document.getElementById( 'myvideo' );
 
 			var positionalAudio = new THREE.PositionalAudio( listener );
 			positionalAudio.setMediaElementSource( audioElement );
