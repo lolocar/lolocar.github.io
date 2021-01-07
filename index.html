@@ -179,6 +179,7 @@
 				
 				backPlane = new THREE.Mesh(backPlaneGeometry,  new THREE.MeshPhongMaterial( { color: 0x000000, side: THREE.DoubleSide } ));
 				backPlane.position.set(-800,0,0);
+				backPlane.rotation.y = Math.PI/2;
 				glscene.add(backPlane);
 
 
