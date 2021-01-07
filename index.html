@@ -106,7 +106,7 @@
 				var light = new THREE.PointLight( 0xffffff, 1 );
 				light.position.set( 50, 100, 100 );
 				camera.add( light );
-
+				camera.lookAt(0, 0, -1000);
 				glscene = new THREE.Scene();
 				glscene.add( camera );
 //				glscene.add( light );
