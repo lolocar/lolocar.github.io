@@ -22,9 +22,9 @@ var DeviceOrientationControls = function ( object ) {
 	this.enabled = true;
 
 	this.deviceOrientation = {};
-	this.screenOrientation = 90;
+	this.screenOrientation = 0;
 
-	this.alphaOffset = 0; // radians
+	this.alphaOffset = Math.PI/2; // radians
 
 	var onDeviceOrientationChangeEvent = function ( event ) {
 
