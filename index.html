@@ -101,7 +101,7 @@
 				var container = document.getElementById( 'container' );
 
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
-				camera.position.set( 0, 0, 1000 );
+				camera.position.set( 0, 1000, 0 );
 				controls = new DeviceOrientationControls( camera );
 				var light = new THREE.PointLight( 0xffffff, 1 );
 				light.position.set( 50, 100, 100 );
@@ -171,8 +171,8 @@
 
 //				createYoutubeVideo('Y2-xZ-1HE-Q', 0, 0, 0, 0);
 //				createYoutubeVideo('IrydklNpcFI', 480, 0, 0, 0);
-				createYoutubeVideo('k31566kjd11', -960, 0, 0, Math.PI/2);
-				createYoutubeVideo('j31583bsoxs', 960, 0, 0, Math.PI/2);
+				createYoutubeVideo('k31566kjd11', 0, 0, -960, Math.PI/2);
+				createYoutubeVideo('j31583bsoxs', 0, 0, 960 Math.PI/2);
 				createYoutubeVideo('m3218u5u41m', 0, 0, 0, Math.PI/2);
 
 				var backPlaneGeometry = new THREE.PlaneGeometry(1920, 1080)
