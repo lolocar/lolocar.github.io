@@ -65,14 +65,18 @@
 			div.style.height = '360px';
 			div.style.backgroundColor = '#fff';
 			
-			var iframe = document.createElement( 'iframe' );
-			iframe.style.width = '100%';
-			iframe.style.height = '100%';
-			iframe.style.border = '0px';
+			var v = document.createElement( 'VIDEO' );
+			if (v.canPlayType("video/webm")) {
+				v.setAttribute("src","test.webm");
+			} 
+			v.setAttribute("width", "640");
+			v.setAttribute("height", "360");
+			v.setAttribute("controls", "controls");
+			document.body.appendChild(v);
+			}
 //			iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
 //			iframe.src = [ 'https://v.qq.com/txp/iframe/player.html?vid=', id ].join( '' );
-			iframe.src = "test.webm"
-			div.appendChild( iframe );
+			div.appendChild( x );
 			
 			var cssobject = new CSS3DObject( div );
 			cssobject.position.set( x, y, z );

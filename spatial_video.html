@@ -103,7 +103,6 @@
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
 				camera.position.set( 0, 0, 1000 );
 				controls = new DeviceOrientationControls( camera );
-				controls.lookAt(0,0,0);
 				var light = new THREE.PointLight( 0xffffff, 1 );
 				light.position.set( 50, 100, 100 );
 				camera.add( light );
@@ -172,14 +171,15 @@
 
 //				createYoutubeVideo('Y2-xZ-1HE-Q', 0, 0, 0, 0);
 //				createYoutubeVideo('IrydklNpcFI', 480, 0, 0, 0);
-				createYoutubeVideo('k31566kjd11', -960, 0, 0, 0);
-				createYoutubeVideo('j31583bsoxs', 960, 0, 0, 0);
-				createYoutubeVideo('m3218u5u41m', 0, 0, 0, 0);
+//				createYoutubeVideo('k31566kjd11', -1000, 0, 1000, Math.PI/2);
+				createYoutubeVideo('j31583bsoxs', -1000, 0, 0, Math.PI/2);
+//				createYoutubeVideo('m3218u5u41m', -1000, 0, 2000, Math.PI/2);
 
 				var backPlaneGeometry = new THREE.PlaneGeometry(1920, 1080)
 				
 				backPlane = new THREE.Mesh(backPlaneGeometry,  new THREE.MeshPhongMaterial( { color: 0x000000, side: THREE.DoubleSide } ));
-				backPlane.position.set(0,0,-200);
+				backPlane.position.set(-800,0,0);
+				backPlane.rotation.y = Math.PI/2;
 				glscene.add(backPlane);
 
 
