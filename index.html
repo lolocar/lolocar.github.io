@@ -1,344 +1,183 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<title>three.js css3d - video</title>
+		<title>three.js webaudio - orientation</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
-		<style>
-			body {
-				background-color: #ffffff;
-			}
-
-			#blocker {
-				position: absolute;
-				top: 0;
-				left: 0;
-				bottom: 0;
-				right: 0;
-			}
-		</style>
 	</head>
-	<body>
-		<div id="container"></div>
-		<div id="blocker"></div>
+<body>
 
-		<script type="module">
+	<audio loop id="music" preload="auto" style="display: none">
+		<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg" type="audio/ogg">
+		<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3" type="audio/mpeg">
+	</audio>
 
-			import * as THREE from '../build/three.module.js';
-			import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
+	<div id="overlay">
+		<button id="startButton">Play</button>
+	</div>
+	<div id="container"></div>
+	<div id="info">
+		<a href="https://threejs.org" target="_blank" rel="noopener noreferrer">three.js</a> webaudio - orientation<br/>
+		music by <a href="http://www.newgrounds.com/audio/listen/376737" target="_blank" rel="noopener noreferrer">skullbeatz</a>
+	</div>
 
-//			import { FirstPersonControls } from './jsm/controls/FirstPersonControls.js';
-//			import { TrackballControls } from './jsm/controls/TrackballControls.js';
-			import { CSS3DRenderer, CSS3DObject } from './jsm/renderers/CSS3DRenderer.js';
-			import { TTFLoader } from './jsm/loaders/TTFLoader.js';
-			import Stats from './jsm/libs/stats.module.js';
+	<script type="module">
+		import * as THREE from '../build/three.module.js';
+		import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
+//		import { OrbitControls } from './jsm/controls/OrbitControls.js';
+		import { PositionalAudioHelper } from './jsm/helpers/PositionalAudioHelper.js';
+		import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
-			var camera, scene, renderer;
-			var glscene, glrenderer;
+		var scene, camera, renderer;
+		var controls;
+		var startButton = document.getElementById( 'startButton' );
+		startButton.addEventListener( 'click', init );
 
-			var controls;
-			var geometry, material, mesh_box, mesh_triangle;
+		function init() {
 
-			var textMesh1, textMesh2, textGeo, material_box, material_text;
-			var backPlane;
-			var mesh_triangle_lr = 0;
-            var mesh_text_ud = 0;
-			var font = null;
-//           var text = '双击666',
-//				height = 20,
-//				size = 70,
-//				hover = 30,
-//				curveSegments = 4,
-//				bevelThickness = 2,
-//				bevelSize = 1.5;
-			var stats = new Stats();
-			container.appendChild( stats.dom );
-			var clock = new THREE.Clock();
-			init();
-			animate();
+			var overlay = document.getElementById( 'overlay' );
+			overlay.remove();
 
-			function createYoutubeVideo ( id, x, y, z, ry ) {
-			
-			var div = document.createElement( 'div' );
-			div.style.width = '480px';
-			div.style.height = '360px';
-			div.style.backgroundColor = '#fff';
-			
-			var v = document.createElement( 'VIDEO' );
-			if (v.canPlayType("video/webm")) {
-				v.setAttribute("src","test.webm");
-			} 
-			v.setAttribute("width", "480");
-			v.setAttribute("height", "360");
-			v.setAttribute("id", "myvideo");
-			v.setAttribute("controls", "controls");
-//			document.body.appendChild(v);
-			
-//			iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
-//			iframe.src = [ 'https://v.qq.com/txp/iframe/player.html?vid=', id ].join( '' );
-			div.appendChild( v );
-			
-			var cssobject = new CSS3DObject( div );
-			cssobject.position.set( x, y, z );
-			cssobject.rotation.y = ry;
-//			cssobject.scale.set(0.01, 0.01, 0.01);
-			cssobject.scale.set(1, 1, 1);
-			
-			scene.add(cssobject);
-			
-			var material = new THREE.MeshStandardMaterial({
-				opacity	: 0.0,
-				color	: new THREE.Color('black'),
-				blending: THREE.NoBlending,
-				side	: THREE.DoubleSide,
-			});
-			
-			var geometry = new THREE.PlaneGeometry( 480, 360 );
-			var webglrepresentation = new THREE.Mesh( geometry, material );
-			webglrepresentation.position.copy( cssobject.position );
-			webglrepresentation.rotation.copy( cssobject.rotation );
-			webglrepresentation.scale.copy( cssobject.scale );
-			glscene.add( webglrepresentation );
-			}
+			var container = document.getElementById( 'container' );
+			//
 
-			function init() {
+			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 100 );
+			camera.position.set( 3, 2, 3 );
 
-				var container = document.getElementById( 'container' );
+			controls = new DeviceOrientationControls( camera );
 
-				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
-				camera.position.set( 0, 0, 1000 );
-				controls = new DeviceOrientationControls( camera );
-				var light = new THREE.PointLight( 0xffffff, 1 );
-				light.position.set( 50, 100, 100 );
-				camera.add( light );
+			var reflectionCube = new THREE.CubeTextureLoader()
+				.setPath( 'textures/cube/SwedishRoyalCastle/' )
+				.load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
 
-				glscene = new THREE.Scene();
-				glscene.add( camera );
-//				glscene.add( light );
-				glrenderer = new THREE.WebGLRenderer( { alpha:true, antialias: true } );
-				glrenderer.setClearColor(0x000000, 0);
-				glrenderer.setSize( window.innerWidth, window.innerHeight );
-				glrenderer.domElement.style.position = 'absolute';
-				glrenderer.domElement.style.pointerEvents = "none";
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xa0a0a0 );
+			scene.fog = new THREE.Fog( 0xa0a0a0, 2, 20 );
 
-				scene = new THREE.Scene();
-//				scene.add( light );
-				renderer = new CSS3DRenderer();
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.domElement.style.position = 'absolute';
+			//
 
+			var hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
+			hemiLight.position.set( 0, 20, 0 );
+			scene.add( hemiLight );
 
-				container.appendChild( renderer.domElement );
-				container.appendChild( glrenderer.domElement );
+			var dirLight = new THREE.DirectionalLight( 0xffffff );
+			dirLight.position.set( 5, 5, 0 );
+			dirLight.castShadow = true;
+			dirLight.shadow.camera.top = 1;
+			dirLight.shadow.camera.bottom = - 1;
+			dirLight.shadow.camera.left = - 1;
+			dirLight.shadow.camera.right = 1;
+			dirLight.shadow.camera.near = 0.1;
+			dirLight.shadow.camera.far = 20;
+			scene.add( dirLight );
 
-				// text
-//				var loader = new TTFLoader();
-//
-//				loader.load( './fonts/ttf/TencentSans-W7.ttf', function ( json ) {
-//
-//					font = new THREE.Font( json );
-//				material_text = new THREE.MeshPhongMaterial( { color: 0xAAAAAA, side: THREE.DoubleSide } )
-//           var text = '放假啦',
-//				height = 20,
-//				size = 70,
-//				hover = 30,
-//				curveSegments = 4,
-//				bevelThickness = 2,
-//				bevelSize = 1.5;
-//					createText('放假啦',15,15,20,4,2,1.5);
-//
-//				} );
-//
-                // triangle
-//				var triangleShape = new THREE.Shape()
-//					.moveTo( 0, 20 )
-//					.lineTo( 20, - 20 )
-//					.lineTo( - 20, - 20 )
-//					.lineTo( 0, 20 ); // close path
-//
-//				var extrudeSettings = { depth: 8, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
-//				var geometry = new THREE.ExtrudeBufferGeometry( triangleShape, extrudeSettings );				
-//				mesh_triangle = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0xBBBB00, side: THREE.DoubleSide } ) );
-//				mesh_triangle.position.set( -720, 0, 10 );
-//				mesh_triangle.rotation.set( 0, 0, 0 );
-//				mesh_triangle.scale.set( 1, 1, 1 );
-//				glscene.add( mesh_triangle );
+			// scene.add( new CameraHelper( dirLight.shadow.camera ) );
+
+			//
+
+			var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 50, 50 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+			mesh.rotation.x = - Math.PI / 2;
+			mesh.receiveShadow = true;
+			scene.add( mesh );
+
+			var grid = new THREE.GridHelper( 50, 50, 0x888888, 0x888888 );
+			scene.add( grid );
+
+			//
+
+			var listener = new THREE.AudioListener();
+			camera.add( listener );
+
+			var audioElement = document.getElementById( 'music' );
+			audioElement.play();
+
+			var positionalAudio = new THREE.PositionalAudio( listener );
+			positionalAudio.setMediaElementSource( audioElement );
+			positionalAudio.setRefDistance( 1 );
+			positionalAudio.setDirectionalCone( 180, 230, 0.1 );
+
+			var helper = new PositionalAudioHelper( positionalAudio, 0.1 );
+			positionalAudio.add( helper );
+
+			//
+
+			var gltfLoader = new GLTFLoader();
+			gltfLoader.load( 'models/gltf/BoomBox/glTF-Binary/BoomBox.glb', function ( gltf ) {
+
+				var boomBox = gltf.scene;
+				boomBox.position.set( 0, 0.2, 0 );
+				boomBox.scale.set( 20, 20, 20 );
+
+				boomBox.traverse( function ( object ) {
+
+					if ( object.isMesh ) {
+
+						object.material.envMap = reflectionCube;
+						object.geometry.rotateY( - Math.PI );
+						object.castShadow = true;
+
+					}
+
+				} );
+
+				boomBox.add( positionalAudio );
+				scene.add( boomBox );
+				animate();
+
+			} );
+
+			// sound is damped behind this wall
+
+			var wallGeometry = new THREE.BoxBufferGeometry( 2, 1, 0.1 );
+			var wallMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, transparent: true, opacity: 0.5 } );
+
+			var wall = new THREE.Mesh( wallGeometry, wallMaterial );
+			wall.position.set( 0, 0.5, - 0.5 );
+			scene.add( wall );
 
 
-				// box
-				geometry = new THREE.BoxGeometry( 30, 30, 30 );
-				material_box = new THREE.MeshPhongMaterial( { color: 0x00AAAA, side: THREE.DoubleSide } )
-				
-				mesh_box = new THREE.Mesh( geometry, material_box );
-                mesh_box.position.set(0,0,200);
-				glscene.add( mesh_box );
+			//
 
+			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.outputEncoding = THREE.sRGBEncoding;
+			renderer.shadowMap.enabled = true;
+			container.appendChild( renderer.domElement );
 
-//				createYoutubeVideo('Y2-xZ-1HE-Q', 0, 0, 0, 0);
-//				createYoutubeVideo('IrydklNpcFI', 480, 0, 0, 0);
-//				createYoutubeVideo('k31566kjd11', -1000, 0, 1000, Math.PI/2);
-				createYoutubeVideo('j31583bsoxs', -1000, 0, 0, Math.PI/2);
-//				createYoutubeVideo('m3218u5u41m', -1000, 0, 2000, Math.PI/2);
+			//
 
-//			var listener = new THREE.AudioListener();
-//			camera.add( listener );
-//
-//			var audioElement = document.getElementById( 'myvideo' );
-//
-//			var positionalAudio = new THREE.PositionalAudio( listener );
-//			positionalAudio.setMediaElementSource( audioElement );
-//			positionalAudio.setRefDistance( 1 );
-//			positionalAudio.setDirectionalCone( 180, 230, 0.1 );
+//			var controls = new OrbitControls( camera, renderer.domElement );
+//			controls.target.set( 0, 0.1, 0 );
+//			controls.update();
+//			controls.minDistance = 0.5;
+//			controls.maxDistance = 10;
+//			controls.maxPolarAngle = 0.5 * Math.PI;
 
-				var backPlaneGeometry = new THREE.PlaneGeometry(1920, 1080)
-				
-				backPlane = new THREE.Mesh(backPlaneGeometry,  new THREE.MeshPhongMaterial( { color: 0x000000, side: THREE.DoubleSide } ));
-				backPlane.position.set(-800,0,0);
-				backPlane.rotation.y = Math.PI/2;
-				glscene.add(backPlane);
+			//
 
+			window.addEventListener( 'resize', onWindowResize, false );
 
-//				controls = new TrackballControls( camera, renderer.domElement );
-//				controls.rotateSpeed = 4;
-//				controls = new FirstPersonControls( camera, renderer.domElement );
-//
-//				controls.movementSpeed = 0;
-//				controls.lookSpeed = 0.01;
-//				controls.noFly = true;
-//				controls.lookVertical = false;
+		}
 
+		function onWindowResize() {
 
-				window.addEventListener( 'resize', onWindowResize, false );
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
 
-				// Block iframe events when dragging camera
+			renderer.setSize( window.innerWidth, window.innerHeight );
 
-				var blocker = document.getElementById( 'blocker' );
-				blocker.style.display = 'none';
-	
-//				controls.addEventListener( 'start', function () {
-//	
-//					blocker.style.display = '';
-//	
-//				} );
-//				controls.addEventListener( 'end', function () {
-//	
-//					blocker.style.display = 'none';
-//	
-//				} );
+		}
 
-			}
+		function animate() {
 
-			function onWindowResize() {
+			requestAnimationFrame( animate );
+			renderer.render( scene, camera );
 
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-				glrenderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.setSize( window.innerWidth, window.innerHeight );
+		}
 
-			}
+	</script>
 
-			function animate() {
-
-				requestAnimationFrame( animate );
-//				mesh_box.rotation.x += 0.01;
-//				mesh_box.rotation.y += 0.02;
-//
-//				if ( mesh_triangle_lr == 0 ) {
-//					mesh_triangle.position.x += 1;
-//					if(mesh_triangle.position.x >= 720)
-//						mesh_triangle_lr = 1;
-//				} else {
-//					mesh_triangle.position.x -= 1;
-//					if(mesh_triangle.position.x <= -720)
-//						mesh_triangle_lr = 0;
-//				}
-//
-//				if ( mesh_text_ud == 0 ) {
-//					var unit = new THREE.Vector3(-1,0,0);
-//					var dir = textMesh1.rotation.clone();
-//					unit.applyEuler(dir);
-//					textMesh1.position.add(unit);
-//					textMesh1.rotation.y += 0.001;
-//					if(textMesh1.position.z >= 600) {
-//						textMesh1.position.x = 600;
-//						textMesh1.position.y = 30;
-//						textMesh1.position.z = 600;
-//						textMesh1.rotation.x = 0;
-//						textMesh1.rotation.y = - Math.PI / 4;
-//						textMesh1.rotation.z = 0;
-//					}	
-//
-//				} else {
-//					var unit = new THREE.Vector3(-1,0,0);
-//					var dir = textMesh1.rotation.clone();
-//					unit.applyEuler(dir);
-//					textMesh1.position.add(unit);
-//					if(textMesh1.position.z >= 600) {
-//						mesh_text_ud = 0;
-//						textMesh1.position.x = 600;
-//						textMesh1.position.y = 30;
-//						textMesh1.position.z = 600;
-//						textMesh1.rotation.x = 0;
-//						textMesh1.rotation.y = - Math.PI / 4;
-//						textMesh1.rotation.z = 0;
-//					}	
-//				}
-
-				stats.update();
-				controls.update();
-
-
-//				var delta = clock.getDelta();
-//
-//				controls.update( delta );
-//				controls.update();
-				glrenderer.render( glscene, camera );
-				renderer.render( scene, camera );
-
-			}
-//           var text = '放假啦',
-//				height = 20,
-//				size = 70,
-//				hover = 30,
-//				curveSegments = 4,
-//				bevelThickness = 2,
-//				bevelSize = 1.5;
-
-//			function createText(text, height, size, hover, curveSegments, bevelThickness, bevelSize) {
-//			
-//				textGeo = new THREE.TextBufferGeometry( text, {
-//
-//					font: font,
-//
-//					size: size,
-//					height: height,
-//					curveSegments: curveSegments,
-//
-//					bevelThickness: bevelThickness,
-//					bevelSize: bevelSize,
-//					bevelEnabled: true
-//
-//				} );
-//
-//				textGeo.computeBoundingBox();
-//				textGeo.computeVertexNormals();
-//
-////				var centerOffset = - 0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
-//
-//				textMesh1 = new THREE.Mesh( textGeo, material_text );
-//
-//				textMesh1.position.x = 600;
-//				textMesh1.position.y = hover;
-//				textMesh1.position.z = 600;
-//
-//				textMesh1.rotation.x = 0;
-//				textMesh1.rotation.y = - Math.PI / 4;
-//				textMesh1.rotation.z = 0;
-//
-//				glscene.add( textMesh1 );
-//
-//			}
-		</script>
-	</body>
+</body>
 </html>

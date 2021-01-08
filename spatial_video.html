@@ -20,13 +20,17 @@
 		</style>
 	</head>
 	<body>
+		<audio loop id="music" preload="auto" style="display: none">
+			<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg" type="audio/ogg">
+			<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3" type="audio/mpeg">
+		</audio>
 		<div id="container"></div>
 		<div id="blocker"></div>
 
 		<script type="module">
 
 			import * as THREE from '../build/three.module.js';
-			import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
+//			import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
 
 //			import { FirstPersonControls } from './jsm/controls/FirstPersonControls.js';
 //			import { TrackballControls } from './jsm/controls/TrackballControls.js';
@@ -65,13 +69,19 @@
 			div.style.height = '360px';
 			div.style.backgroundColor = '#fff';
 			
-			var iframe = document.createElement( 'iframe' );
-			iframe.style.width = '100%';
-			iframe.style.height = '100%';
-			iframe.style.border = '0px';
+			var v = document.createElement( 'VIDEO' );
+			if (v.canPlayType("video/webm")) {
+				v.setAttribute("src","test.webm");
+			} 
+			v.setAttribute("width", "480");
+			v.setAttribute("height", "360");
+			v.setAttribute("id", "myvideo");
+			v.setAttribute("controls", "controls");
+			document.body.appendChild(v);
+			
 //			iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
-			iframe.src = [ 'https://v.qq.com/txp/iframe/player.html?vid=', id ].join( '' );
-			div.appendChild( iframe );
+//			iframe.src = [ 'https://v.qq.com/txp/iframe/player.html?vid=', id ].join( '' );
+			div.appendChild( v );
 			
 			var cssobject = new CSS3DObject( div );
 			cssobject.position.set( x, y, z );
@@ -102,7 +112,7 @@
 
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
 				camera.position.set( 0, 0, 1000 );
-				controls = new DeviceOrientationControls( camera );
+//				controls = new DeviceOrientationControls( camera );
 				var light = new THREE.PointLight( 0xffffff, 1 );
 				light.position.set( 50, 100, 100 );
 				camera.add( light );
@@ -175,6 +185,16 @@
 				createYoutubeVideo('j31583bsoxs', -1000, 0, 0, Math.PI/2);
 //				createYoutubeVideo('m3218u5u41m', -1000, 0, 2000, Math.PI/2);
 
+//			var listener = new THREE.AudioListener();
+//			camera.add( listener );
+//
+//			var audioElement = document.getElementById( 'myvideo' );
+//
+//			var positionalAudio = new THREE.PositionalAudio( listener );
+//			positionalAudio.setMediaElementSource( audioElement );
+//			positionalAudio.setRefDistance( 1 );
+//			positionalAudio.setDirectionalCone( 180, 230, 0.1 );
+
 				var backPlaneGeometry = new THREE.PlaneGeometry(1920, 1080)
 				
 				backPlane = new THREE.Mesh(backPlaneGeometry,  new THREE.MeshPhongMaterial( { color: 0x000000, side: THREE.DoubleSide } ));
@@ -183,8 +203,8 @@
 				glscene.add(backPlane);
 
 
-//				controls = new TrackballControls( camera, renderer.domElement );
-//				controls.rotateSpeed = 4;
+				controls = new TrackballControls( camera, renderer.domElement );
+				controls.rotateSpeed = 4;
 //				controls = new FirstPersonControls( camera, renderer.domElement );
 //
 //				controls.movementSpeed = 0;
@@ -200,16 +220,16 @@
 				var blocker = document.getElementById( 'blocker' );
 				blocker.style.display = 'none';
 	
-//				controls.addEventListener( 'start', function () {
-//	
-//					blocker.style.display = '';
-//	
-//				} );
-//				controls.addEventListener( 'end', function () {
-//	
-//					blocker.style.display = 'none';
-//	
-//				} );
+				controls.addEventListener( 'start', function () {
+	
+					blocker.style.display = '';
+	
+				} );
+				controls.addEventListener( 'end', function () {
+	
+					blocker.style.display = 'none';
+	
+				} );
 
 			}
 
@@ -270,13 +290,13 @@
 //				}
 
 				stats.update();
-				controls.update();
+//				controls.update();
 
 
 //				var delta = clock.getDelta();
-//
 //				controls.update( delta );
-//				controls.update();
+
+				controls.update();
 				glrenderer.render( glscene, camera );
 				renderer.render( scene, camera );
 
