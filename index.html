@@ -73,13 +73,13 @@
 			v.setAttribute("height", "360");
 			v.setAttribute("id", "myvideo");
 			v.setAttribute("controls", "controls");
-			document.body.appendChild(v);
+//			document.body.appendChild(v);
 			
 //			iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
 //			iframe.src = [ 'https://v.qq.com/txp/iframe/player.html?vid=', id ].join( '' );
-//			div.appendChild( v );
+			div.appendChild( v );
 			
-			var cssobject = new CSS3DObject( v );
+			var cssobject = new CSS3DObject( div );
 			cssobject.position.set( x, y, z );
 			cssobject.rotation.y = ry;
 //			cssobject.scale.set(0.01, 0.01, 0.01);
