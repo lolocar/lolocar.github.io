@@ -6,16 +6,20 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="main.css">
 	</head>
+<style>
+	div {text-align: center;}
+</style>
+
 <body>
 
-	<audio loop id="music" preload="auto" style="display: none">
-		<source src="output.wav" type="audio/wav">
+	<audio loop id="music" preload="auto" >
+		<source src="accompaniment.wav" type="audio/wav">
 	</audio>
-
+	<div>
 	<video loop id="video" preload="auto" >
-		<source src="test.webm" type="video/webm">
+		<source src="test.mp4" type="video/mp4">
 	</video>
-
+	</div>
 
 	<div id="overlay">
 		<button id="startButton">Play</button>
@@ -24,10 +28,8 @@
 
 	<script type="module">
 		import * as THREE from '../build/three.module.js';
-		import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
-//		import { FirstPersonControls } from './jsm/controls/FirstPersonControls.js';
-
-//		import { TrackballControls } from './jsm/controls/TrackballControls.js';
+//		import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
+		import { TrackballControls } from './jsm/controls/TrackballControls.js';
 //		import { OrbitControls } from './jsm/controls/OrbitControls.js';
 		import { PositionalAudioHelper } from './jsm/helpers/PositionalAudioHelper.js';
 		import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
@@ -52,7 +54,7 @@
 			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 100 );
 			camera.position.set( 0, 1, 5 );
 
-			controls = new DeviceOrientationControls( camera );
+//			controls = new DeviceOrientationControls( camera );
 
 			var reflectionCube = new THREE.CubeTextureLoader()
 				.setPath( 'textures/cube/SwedishRoyalCastle/' )
@@ -94,6 +96,9 @@
 
 			var audioElement = document.getElementById( 'video' );
 			audioElement.play();
+
+			var audioElement2 = document.getElementById( 'music' );
+			audioElement2.play();
 
 			var positionalAudio = new THREE.PositionalAudio( listener );
 			positionalAudio.setMediaElementSource( audioElement );
@@ -155,14 +160,8 @@
 			container.appendChild( renderer.domElement );
 
 
-//			controls = new TrackballControls( camera, renderer.domElement );
-//			controls.rotateSpeed = 4;
-//			controls = new FirstPersonControls( camera, renderer.domElement );
-//
-//			controls.movementSpeed = 0;
-//			controls.lookSpeed = 0.01;
-//			controls.noFly = true;
-//			controls.lookVertical = false;
+			controls = new TrackballControls( camera, renderer.domElement );
+			controls.rotateSpeed = 4;
 
 //			var controls = new OrbitControls( camera, renderer.domElement );
 //			controls.target.set( 0, 0.1, 0 );
@@ -190,9 +189,6 @@
 			requestAnimationFrame( animate );
 			renderer.render( scene, camera );
 			controls.update();
-			controls.updateAlphaOffsetAngle(Math.PI/2);
-			//var delta = clock.getDelta();
-			//controls.update( delta );
 		}
 
 	</script>

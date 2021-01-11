@@ -24,6 +24,14 @@
 			<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.ogg" type="audio/ogg">
 			<source src="sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3" type="audio/mpeg">
 		</audio>
+		<video loop id="myvideo" preload="auto" >
+			<source src="test.webm" type="video/webm">
+		</video>
+
+		<div id="overlay">
+			<button id="startButton">Play</button>
+		</div>
+
 		<div id="container"></div>
 		<div id="blocker"></div>
 
@@ -33,7 +41,7 @@
 //			import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
 
 //			import { FirstPersonControls } from './jsm/controls/FirstPersonControls.js';
-//			import { TrackballControls } from './jsm/controls/TrackballControls.js';
+			import { TrackballControls } from './jsm/controls/TrackballControls.js';
 			import { CSS3DRenderer, CSS3DObject } from './jsm/renderers/CSS3DRenderer.js';
 			import { TTFLoader } from './jsm/loaders/TTFLoader.js';
 			import Stats from './jsm/libs/stats.module.js';
@@ -49,18 +57,15 @@
 			var mesh_triangle_lr = 0;
             var mesh_text_ud = 0;
 			var font = null;
-//           var text = '双击666',
-//				height = 20,
-//				size = 70,
-//				hover = 30,
-//				curveSegments = 4,
-//				bevelThickness = 2,
-//				bevelSize = 1.5;
 			var stats = new Stats();
 			container.appendChild( stats.dom );
 			var clock = new THREE.Clock();
-			init();
-			animate();
+
+			var startButton = document.getElementById( 'startButton' );
+			startButton.addEventListener( 'click', init );
+	
+//			init();
+//			animate();
 
 			function createYoutubeVideo ( id, x, y, z, ry ) {
 			
@@ -69,15 +74,21 @@
 			div.style.height = '360px';
 			div.style.backgroundColor = '#fff';
 			
-			var v = document.createElement( 'VIDEO' );
-			if (v.canPlayType("video/webm")) {
-				v.setAttribute("src","test.webm");
-			} 
+//			var v = document.createElement( 'VIDEO' );
+//			if (v.canPlayType("video/webm")) {
+//				v.setAttribute("src","test.webm");
+//			} 
+//			v.setAttribute("width", "480");
+//			v.setAttribute("height", "360");
+//			v.setAttribute("id", "myvideo");
+//			v.setAttribute("controls", "controls");
+//			document.body.appendChild(v);
+			var v = document.getElementById( 'myvideo' );
 			v.setAttribute("width", "480");
 			v.setAttribute("height", "360");
-			v.setAttribute("id", "myvideo");
 			v.setAttribute("controls", "controls");
 			document.body.appendChild(v);
+
 			
 //			iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
 //			iframe.src = [ 'https://v.qq.com/txp/iframe/player.html?vid=', id ].join( '' );
@@ -107,6 +118,8 @@
 			}
 
 			function init() {
+				var overlay = document.getElementById( 'overlay' );
+				overlay.remove();
 
 				var container = document.getElementById( 'container' );
 
@@ -136,40 +149,6 @@
 				container.appendChild( renderer.domElement );
 				container.appendChild( glrenderer.domElement );
 
-				// text
-//				var loader = new TTFLoader();
-//
-//				loader.load( './fonts/ttf/TencentSans-W7.ttf', function ( json ) {
-//
-//					font = new THREE.Font( json );
-//				material_text = new THREE.MeshPhongMaterial( { color: 0xAAAAAA, side: THREE.DoubleSide } )
-//           var text = '放假啦',
-//				height = 20,
-//				size = 70,
-//				hover = 30,
-//				curveSegments = 4,
-//				bevelThickness = 2,
-//				bevelSize = 1.5;
-//					createText('放假啦',15,15,20,4,2,1.5);
-//
-//				} );
-//
-                // triangle
-//				var triangleShape = new THREE.Shape()
-//					.moveTo( 0, 20 )
-//					.lineTo( 20, - 20 )
-//					.lineTo( - 20, - 20 )
-//					.lineTo( 0, 20 ); // close path
-//
-//				var extrudeSettings = { depth: 8, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
-//				var geometry = new THREE.ExtrudeBufferGeometry( triangleShape, extrudeSettings );				
-//				mesh_triangle = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0xBBBB00, side: THREE.DoubleSide } ) );
-//				mesh_triangle.position.set( -720, 0, 10 );
-//				mesh_triangle.rotation.set( 0, 0, 0 );
-//				mesh_triangle.scale.set( 1, 1, 1 );
-//				glscene.add( mesh_triangle );
-
-
 				// box
 				geometry = new THREE.BoxGeometry( 30, 30, 30 );
 				material_box = new THREE.MeshPhongMaterial( { color: 0x00AAAA, side: THREE.DoubleSide } )
@@ -178,12 +157,7 @@
                 mesh_box.position.set(0,0,200);
 				glscene.add( mesh_box );
 
-
-//				createYoutubeVideo('Y2-xZ-1HE-Q', 0, 0, 0, 0);
-//				createYoutubeVideo('IrydklNpcFI', 480, 0, 0, 0);
-//				createYoutubeVideo('k31566kjd11', -1000, 0, 1000, Math.PI/2);
-				createYoutubeVideo('j31583bsoxs', -1000, 0, 0, Math.PI/2);
-//				createYoutubeVideo('m3218u5u41m', -1000, 0, 2000, Math.PI/2);
+				createYoutubeVideo('j31583bsoxs', 0, 0, 200, 0);
 
 //			var listener = new THREE.AudioListener();
 //			camera.add( listener );
@@ -198,8 +172,8 @@
 				var backPlaneGeometry = new THREE.PlaneGeometry(1920, 1080)
 				
 				backPlane = new THREE.Mesh(backPlaneGeometry,  new THREE.MeshPhongMaterial( { color: 0x000000, side: THREE.DoubleSide } ));
-				backPlane.position.set(-800,0,0);
-				backPlane.rotation.y = Math.PI/2;
+				backPlane.position.set(0,0,-800);
+				backPlane.rotation.y = 0;
 				glscene.add(backPlane);
 
 
@@ -230,7 +204,7 @@
 					blocker.style.display = 'none';
 	
 				} );
-
+				animate();
 			}
 
 			function onWindowResize() {
