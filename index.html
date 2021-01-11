@@ -1,190 +1,196 @@
-<!DOCTYPE html> 
-<html> 
-<head>
-<style type="text/css">
-body {
-  background-color: #111111;
-  color: green;
-  font-size: normal;
-}
-.green {
-    color: #00FF00;
-    border-style: none;
-}
-.yellow {
-    color: #a87f32;
-    border-style: none;
-}
-.black {
-    color: #000000;
-    border-style: none;
-}
-#box {
-  width: 100px;
-  height: 100px;
-  border: 1px solid #000;
-  margin-left: 10px;
-}
-
-
-.split {
-  height: 100%;  
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  overflow-x: hidden;
-  padding-top: 20px;
-}
-
-/* Control the left side */
-.left {
-  left: 0;
-  background-color: #000000;
-}
-
-/* Control the right side */
-.right {
-  right: 0;
-  background-color: 000000;
-}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webaudio - orientation</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+<style>
+	div {text-align: center;}
 </style>
-</head>
-<body> 
-<div class="split left">
-	<div class="centered">
-		<video controls id="myVideo" width="640" >
-			<source src="test.webm" type="video/webm">
-			<p>This browser does not support the video element.</p>
-		</video>
+
+<body>
+	<audio loop id="music" preload="auto" >
+		<source src="accompaniment.wav" type="audio/wav">
+	</audio>
+	<div>
+	<video loop id="video" preload="auto" >
+		<source src="test.mp4" type="video/mp4">
+	</video>
 	</div>
-</div>
 
-<div class="split right">
-  <div class="centered">
-	<form>
-		<input checked type="checkbox" id="sense_ambient" name="sense_ambient" onclick="update2()">
-		<label for="sense_ambient"> 环境光检测</label><br><br>
-		<input checked type="checkbox" id="dyn_bright" name="dyn_bright" onclick="update2()">
-		<label for="dyn_bright"> 自适应亮度</label><br>
-		<input checked type="checkbox" id="dyn_contrast" name="dyn_contrast" onclick="update2()">
-		<label for="dyn_contrast"> 自适应对比度</label><br>
-		<input checked type="checkbox" id="dyn_sepia" name="dyn_sepia" onclick="update2()">
-		<label for="dyn_sepia"> 自适应“防蓝光”</label><br><br>
+	<div id="overlay">
+		<button id="startButton">Play</button>
+	</div>
+	<div id="container"></div>
 
-	</form>
+	<script type="module">
+		import * as THREE from './build/three.module.js';
+//		import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
+		import { TrackballControls } from './jsm/controls/TrackballControls.js';
+//		import { OrbitControls } from './jsm/controls/OrbitControls.js';
+		import { PositionalAudioHelper } from './jsm/helpers/PositionalAudioHelper.js';
+		import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+		import { CSS3DRenderer, CSS3DObject } from './jsm/renderers/CSS3DRenderer.js';
 
-	<table>
-	<tr><td>环境亮度（模拟）</td><td><input type='number' id='value_lux_e' min='0' max='10000' value='400' step='50' onchange="update2()">lux.</input></td></tr>
-	<tr><td>环境亮度（传感器）</td><td><b id="value_lux">unknown</b>.</td></tr>
-	<tr><td>亮度调整</td><td><b id="value_b">unknown</b>.</td></tr>
-	<tr><td>对比度调整</td><td><b id="value_c">unknown</b>.</td></tr>
-	<tr><td>褐度调整</td><td><b id="value_s">unknown</b>.</td></tr>
-	</table>
-	打开传感器权限：<br>
-	chrome://flags/#enable-generic-sensor
-	<div id="box"> </div>
-  </div>
-</div>
+		var scene, camera, renderer;
+		var cssscene, cssrenderer;
+
+		var controls;
+		var startButton = document.getElementById( 'startButton' );
+		startButton.addEventListener( 'click', init );
+		var clock = new THREE.Clock();
+
+		function init() {
+
+			var overlay = document.getElementById( 'overlay' );
+			overlay.remove();
+
+			var container = document.getElementById( 'container' );
+			//
+
+			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 100 );
+			camera.position.set( 0, 1, 5 );
+
+//			controls = new DeviceOrientationControls( camera );
+
+			var reflectionCube = new THREE.CubeTextureLoader()
+				.setPath( 'textures/cube/SwedishRoyalCastle/' )
+				.load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
+
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xa0a0a0 );
+			scene.fog = new THREE.Fog( 0xa0a0a0, 2, 20 );
+
+			//
+
+			var hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
+			hemiLight.position.set( 0, 20, 0 );
+			scene.add( hemiLight );
+
+			var dirLight = new THREE.DirectionalLight( 0xffffff );
+			dirLight.position.set( 5, 5, 0 );
+			dirLight.castShadow = true;
+			dirLight.shadow.camera.top = 1;
+			dirLight.shadow.camera.bottom = - 1;
+			dirLight.shadow.camera.left = - 1;
+			dirLight.shadow.camera.right = 1;
+			dirLight.shadow.camera.near = 0.1;
+			dirLight.shadow.camera.far = 20;
+			scene.add( dirLight );
+
+			var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 50, 50 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+			mesh.rotation.x = - Math.PI / 2;
+			mesh.receiveShadow = true;
+			scene.add( mesh );
+
+			var grid = new THREE.GridHelper( 50, 50, 0x888888, 0x888888 );
+			scene.add( grid );
+
+			//
+
+			var listener = new THREE.AudioListener();
+			camera.add( listener );
+
+			var audioElement = document.getElementById( 'video' );
+			audioElement.play();
+
+			var audioElement2 = document.getElementById( 'music' );
+			audioElement2.play();
+
+			var positionalAudio = new THREE.PositionalAudio( listener );
+			positionalAudio.setMediaElementSource( audioElement );
+			positionalAudio.setRefDistance( 1 );
+			positionalAudio.setDirectionalCone( 180, 230, 0.1 );
+
+			var helper = new PositionalAudioHelper( positionalAudio, 0.1 );
+			positionalAudio.add( helper );
+
+			//
+
+			var gltfLoader = new GLTFLoader();
+			gltfLoader.load( 'models/gltf/BoomBox/glTF-Binary/BoomBox.glb', function ( gltf ) {
+
+				var boomBox = gltf.scene;
+				boomBox.position.set( 0, 0.2, 0 );
+				boomBox.scale.set( 20, 20, 20 );
+
+				boomBox.traverse( function ( object ) {
+
+					if ( object.isMesh ) {
+
+						object.material.envMap = reflectionCube;
+						object.geometry.rotateY( - Math.PI );
+						object.castShadow = true;
+
+					}
+
+				} );
+
+				boomBox.add( positionalAudio );
+				scene.add( boomBox );
+
+			} );
+
+			// sound is damped behind this wall
+
+			var wallGeometry = new THREE.BoxBufferGeometry( 2, 1, 0.1 );
+			var wallMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, transparent: true, opacity: 0.5 } );
+
+			var wall = new THREE.Mesh( wallGeometry, wallMaterial );
+			wall.position.set( 0, 0.5, - 0.5 );
+			scene.add( wall );
+
+
+			//
+
+			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.outputEncoding = THREE.sRGBEncoding;
+//			renderer.shadowMap.enabled = true;
+//			renderer.setClearColor(0x000000, 0);
+//			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.domElement.style.position = 'absolute';
 
 
 
+			container.appendChild( renderer.domElement );
 
 
+			controls = new TrackballControls( camera, renderer.domElement );
+			controls.rotateSpeed = 4;
 
-<script>
-var vid = document.getElementById("myVideo");
+//			var controls = new OrbitControls( camera, renderer.domElement );
+//			controls.target.set( 0, 0.1, 0 );
+//			controls.update();
+//			controls.minDistance = 0.5;
+//			controls.maxDistance = 10;
+//			controls.maxPolarAngle = 0.5 * Math.PI;
 
-function update2() {
-  var illuminance = parseInt(document.getElementById("value_lux").innerHTML);
+			//
 
-  if(document.getElementById("sense_ambient").checked==false)
-	illuminance = document.getElementById("value_lux_e").value;
-      
-  var adjustment_b = Math.pow(illuminance,0.45)/32*40+80;
-  if(document.getElementById("dyn_bright").checked==false)
-	adjustment_b=100;
-  if(adjustment_b>120)
-	adjustment_b=120;
-  var adjustment_c = Math.pow(illuminance,0.6)/120*30+90;	  
-  if(document.getElementById("dyn_contrast").checked==false)
-	adjustment_c=100;
-  if(adjustment_c>120)
-	adjustment_c=120;
-  var adjustment_s = 40-illuminance/100*40;
-  if(document.getElementById("dyn_sepia").checked==false)
-	adjustment_s=0;
-  if(adjustment_s>40)
-	adjustment_s=40;
-  if(adjustment_s<=0)
-	adjustment_s=0;
-	
-  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"sepia("+adjustment_s+"%)";  
-  document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
-  document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
-  document.getElementById("value_s").innerHTML = adjustment_s.toFixed(2) + " %";
-	  
-  var colorPart = Math.min(255, illuminance).toFixed(0);
-  document.getElementById("box").style.backgroundColor =
-    "rgb(" + colorPart + ", " + colorPart + ", " + colorPart + ")";
-}
+			window.addEventListener( 'resize', onWindowResize, false );
+			animate();
+		}
 
-function update(illuminance) {
+		function onWindowResize() {
 
-  document.getElementById("value_lux").innerHTML = illuminance;
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
 
-  if(document.getElementById("sense_ambient").checked==false)
-	illuminance = document.getElementById("value_lux_e").value;
+			renderer.setSize( window.innerWidth, window.innerHeight );
 
-	
-      
-  var adjustment_b = Math.pow(illuminance,0.45)/32*40+80;
-  if(document.getElementById("dyn_bright").checked==false)
-	adjustment_b=100;
-  if(adjustment_b>120)
-	adjustment_b=120;
-  var adjustment_c = Math.pow(illuminance,0.6)/120*30+90;  
-  if(document.getElementById("dyn_contrast").checked==false)
-	adjustment_c=100;
-  if(adjustment_c>120)
-	adjustment_c=120;
-  var adjustment_s = 40-illuminance/100*40;
-  if(document.getElementById("dyn_sepia").checked==false)
-	adjustment_s=0;
-  if(adjustment_s>40)
-	adjustment_s=40;
-  if(adjustment_s<=0)
-	adjustment_s=0;
-	
-  vid.style.filter = "brightness("+adjustment_b+"%)"+"contrast("+adjustment_c+"%)"+"sepia("+adjustment_s+"%)";  
-  document.getElementById("value_b").innerHTML = adjustment_b.toFixed(2) + " %";
-  document.getElementById("value_c").innerHTML = adjustment_c.toFixed(2) + " %";
-  document.getElementById("value_s").innerHTML = adjustment_s.toFixed(2) + " %";
-	  
-  var colorPart = Math.min(255, illuminance).toFixed(0);
-  document.getElementById("box").style.backgroundColor =
-    "rgb(" + colorPart + ", " + colorPart + ", " + colorPart + ")";
-}
+		}
 
-if ("AmbientLightSensor" in window) {
-  try {
-    var sensor = new AmbientLightSensor();
-    sensor.addEventListener("reading", function (event) {
-      update(sensor.illuminance);
-    });
-    sensor.start();
-  } catch (e) {
-    console.error(e);
-  }
-}
+		function animate() {
+			requestAnimationFrame( animate );
+			renderer.render( scene, camera );
+			controls.update();
+		}
 
-if ("ondevicelight" in window) {
-  function onUpdateDeviceLight(event) {
-    update(event.value);
-  }
-  
-  window.addEventListener("devicelight", onUpdateDeviceLight);
-}
-</script> 
+	</script>
 
-</body> 
+</body>
 </html>
