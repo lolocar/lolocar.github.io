@@ -12,24 +12,30 @@
 		<source src="output.wav" type="audio/wav">
 	</audio>
 
+	<video loop id="video" preload="auto" >
+		<source src="test.webm" type="video/webm">
+	</video>
+
+
 	<div id="overlay">
 		<button id="startButton">Play</button>
 	</div>
 	<div id="container"></div>
-	<div id="info">
-		<a href="https://threejs.org" target="_blank" rel="noopener noreferrer">three.js</a> webaudio - orientation<br/>
-		music by <a href="http://www.newgrounds.com/audio/listen/376737" target="_blank" rel="noopener noreferrer">skullbeatz</a>
-	</div>
 
 	<script type="module">
 		import * as THREE from '../build/three.module.js';
 		import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
 //		import { FirstPersonControls } from './jsm/controls/FirstPersonControls.js';
+
+//		import { TrackballControls } from './jsm/controls/TrackballControls.js';
 //		import { OrbitControls } from './jsm/controls/OrbitControls.js';
 		import { PositionalAudioHelper } from './jsm/helpers/PositionalAudioHelper.js';
 		import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+		import { CSS3DRenderer, CSS3DObject } from './jsm/renderers/CSS3DRenderer.js';
 
 		var scene, camera, renderer;
+		var cssscene, cssrenderer;
+
 		var controls;
 		var startButton = document.getElementById( 'startButton' );
 		startButton.addEventListener( 'click', init );
@@ -44,7 +50,7 @@
 			//
 
 			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 100 );
-			camera.position.set( 0, 1, 3 );
+			camera.position.set( 0, 1, 5 );
 
 			controls = new DeviceOrientationControls( camera );
 
@@ -73,10 +79,6 @@
 			dirLight.shadow.camera.far = 20;
 			scene.add( dirLight );
 
-			// scene.add( new CameraHelper( dirLight.shadow.camera ) );
-
-			//
-
 			var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 50, 50 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
 			mesh.rotation.x = - Math.PI / 2;
 			mesh.receiveShadow = true;
@@ -90,7 +92,7 @@
 			var listener = new THREE.AudioListener();
 			camera.add( listener );
 
-			var audioElement = document.getElementById( 'music' );
+			var audioElement = document.getElementById( 'video' );
 			audioElement.play();
 
 			var positionalAudio = new THREE.PositionalAudio( listener );
@@ -124,7 +126,6 @@
 
 				boomBox.add( positionalAudio );
 				scene.add( boomBox );
-				animate();
 
 			} );
 
@@ -144,16 +145,24 @@
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			renderer.setPixelRatio( window.devicePixelRatio );
 			renderer.outputEncoding = THREE.sRGBEncoding;
-			renderer.shadowMap.enabled = true;
+//			renderer.shadowMap.enabled = true;
+//			renderer.setClearColor(0x000000, 0);
+//			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.domElement.style.position = 'absolute';
+
+
+
 			container.appendChild( renderer.domElement );
 
-			//
-//				controls = new FirstPersonControls( camera, renderer.domElement );
+
+//			controls = new TrackballControls( camera, renderer.domElement );
+//			controls.rotateSpeed = 4;
+//			controls = new FirstPersonControls( camera, renderer.domElement );
 //
-//				controls.movementSpeed = 0;
-//				controls.lookSpeed = 0.01;
-//				controls.noFly = true;
-//				controls.lookVertical = false;
+//			controls.movementSpeed = 0;
+//			controls.lookSpeed = 0.01;
+//			controls.noFly = true;
+//			controls.lookVertical = false;
 
 //			var controls = new OrbitControls( camera, renderer.domElement );
 //			controls.target.set( 0, 0.1, 0 );
@@ -165,7 +174,7 @@
 			//
 
 			window.addEventListener( 'resize', onWindowResize, false );
-
+			animate();
 		}
 
 		function onWindowResize() {
@@ -181,9 +190,9 @@
 
 			requestAnimationFrame( animate );
 			renderer.render( scene, camera );
-//			var delta = clock.getDelta();
-//			controls.update( delta );
-			controls.update( );
+			//var delta = clock.getDelta();
+			//controls.update( delta );
+			controls.update();
 		}
 
 	</script>
