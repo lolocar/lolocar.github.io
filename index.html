@@ -187,10 +187,10 @@
 		}
 
 		function animate() {
-			controls.update();
-			controls.updateAlphaOffsetAngle(Math.PI/2);
 			requestAnimationFrame( animate );
 			renderer.render( scene, camera );
+			controls.update();
+			controls.updateAlphaOffsetAngle(Math.PI/2);
 			//var delta = clock.getDelta();
 			//controls.update( delta );
 		}
