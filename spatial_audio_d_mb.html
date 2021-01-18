@@ -18,6 +18,9 @@
 	<audio loop id="speaker1" preload="auto" >
 		<source src="speaker1.wav" type="audio/wav">
 	</audio>
+	<audio loop id="music" preload="auto" >
+		<source src="musicbox.wav" type="audio/wav">
+	</audio>
 
 	</div>
 
@@ -101,6 +104,8 @@
 			var audioElement2 = document.getElementById( 'speaker2' );
 			audioElement2.play();
 
+			var audioElement3 = document.getElementById( 'music' );
+			audioElement3.play();
 
 			var positionalAudio = new THREE.PositionalAudio( listener );
 			positionalAudio.setMediaElementSource( audioElement );
@@ -111,6 +116,12 @@
 			positionalAudio2.setMediaElementSource( audioElement2 );
 			positionalAudio2.setRefDistance( 1 );
 			positionalAudio2.setDirectionalCone( 180, 230, 0.1 );
+
+			var positionalAudio3 = new THREE.PositionalAudio( listener );
+			positionalAudio3.setMediaElementSource( audioElement3 );
+			positionalAudio3.setRefDistance( 1 );
+			positionalAudio3.setDirectionalCone( 180, 230, 0.1 );
+			
 
 			var helper = new PositionalAudioHelper( positionalAudio, 0.1 );
 			positionalAudio.add( helper );
@@ -162,6 +173,29 @@
 
 				boomBox2.add( positionalAudio2 );
 				scene.add( boomBox2 );
+
+			} );
+
+				gltfLoader.load( 'models/gltf/Parrot.glb', function ( gltf ) {
+
+				boomBox3 = gltf.scene;
+				boomBox3.position.set( 0, 3, 0 );
+				boomBox3.scale.set( 0.01, 0.01, 0.01 );
+
+				boomBox3.traverse( function ( object ) {
+
+					if ( object.isMesh ) {
+
+						object.material.envMap = reflectionCube;
+//						object.geometry.rotateY( Math.PI );
+						object.castShadow = true;
+
+					}
+
+				} );
+
+				boomBox3.add( positionalAudio3 );
+				scene.add( boomBox3 );
 
 			} );
 
@@ -219,6 +253,10 @@
 	
 				boomBox.position.z += boomBox_zv;
 
+			}
+			if(boomBox3) 
+			{			
+				boomBox3.rotation.y+=0.005;
 			}
 
 			requestAnimationFrame( animate );
