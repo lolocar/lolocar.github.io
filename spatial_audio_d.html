@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webaudio - orientation</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+	</head>
+<style>
+	div {text-align: center;}
+</style>
+
+<body>
+	<audio loop id="speaker2" preload="auto" >
+		<source src="speaker2.wav" type="audio/wav">
+	</audio>
+	<div>
+	<audio loop id="speaker1" preload="auto" >
+		<source src="speaker1.wav" type="audio/wav">
+	</audio>
+	<audio loop id="music" preload="auto" >
+		<source src="musicbox.wav" type="audio/wav">
+	</audio>
+
+	</div>
+
+	<div id="overlay">
+		<button id="startButton">Play</button>
+	</div>
+	<div id="container"></div>
+
+	<script type="module">
+		import * as THREE from '../build/three.module.js';
+		import { DeviceOrientationControls } from './jsm/controls/DeviceOrientationControls.js';
+//		import { TrackballControls } from './jsm/controls/TrackballControls.js';
+//		import { OrbitControls } from './jsm/controls/OrbitControls.js';
+		import { PositionalAudioHelper } from './jsm/helpers/PositionalAudioHelper.js';
+		import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+		import { CSS3DRenderer, CSS3DObject } from './jsm/renderers/CSS3DRenderer.js';
+
+		var scene, camera, renderer;
+		var cssscene, cssrenderer;
+	
+		var controls;
+		var startButton = document.getElementById( 'startButton' );
+		startButton.addEventListener( 'click', init );
+		var clock = new THREE.Clock();
+		var boomBox, boomBox2, boomBox3;
+
+		function init() {
+
+			var overlay = document.getElementById( 'overlay' );
+			overlay.remove();
+
+			var container = document.getElementById( 'container' );
+			//
+
+			camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 100 );
+			camera.position.set( 0, 0.5, 4 );
+
+			controls = new DeviceOrientationControls( camera );
+
+			var reflectionCube = new THREE.CubeTextureLoader()
+				.setPath( 'textures/cube/SwedishRoyalCastle/' )
+				.load( [ 'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg' ] );
+
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color( 0xa0a0a0 );
+			scene.fog = new THREE.Fog( 0xa0a0a0, 2, 20 );
+
+			//
+
+			var hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
+			hemiLight.position.set( 0, 20, 0 );
+			scene.add( hemiLight );
+
+			var dirLight = new THREE.DirectionalLight( 0xffffff );
+			dirLight.position.set( 5, 5, 0 );
+			dirLight.castShadow = true;
+			dirLight.shadow.camera.top = 1;
+			dirLight.shadow.camera.bottom = - 1;
+			dirLight.shadow.camera.left = - 1;
+			dirLight.shadow.camera.right = 1;
+			dirLight.shadow.camera.near = 0.1;
+			dirLight.shadow.camera.far = 20;
+			scene.add( dirLight );
+
+			var mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 50, 50 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+			mesh.rotation.x = - Math.PI / 2;
+			mesh.receiveShadow = true;
+			scene.add( mesh );
+
+			var grid = new THREE.GridHelper( 50, 50, 0x888888, 0x888888 );
+			scene.add( grid );
+
+			//
+
+			var listener = new THREE.AudioListener();
+			camera.add( listener );
+
+			var audioElement = document.getElementById( 'speaker1' );
+			audioElement.play();
+
+			var audioElement2 = document.getElementById( 'speaker2' );
+			audioElement2.play();
+
+			var audioElement3 = document.getElementById( 'music' );
+			audioElement3.play();
+
+			var positionalAudio = new THREE.PositionalAudio( listener );
+			positionalAudio.setMediaElementSource( audioElement );
+			positionalAudio.setRefDistance( 1 );
+			positionalAudio.setDirectionalCone( 180, 230, 0.1 );
+
+			var positionalAudio2 = new THREE.PositionalAudio( listener );
+			positionalAudio2.setMediaElementSource( audioElement2 );
+			positionalAudio2.setRefDistance( 1 );
+			positionalAudio2.setDirectionalCone( 180, 230, 0.1 );
+
+			var positionalAudio3 = new THREE.PositionalAudio( listener );
+			positionalAudio3.setMediaElementSource( audioElement3 );
+			positionalAudio3.setRefDistance( 1 );
+			positionalAudio3.setDirectionalCone( 180, 230, 0.1 );
+			
+
+			var helper = new PositionalAudioHelper( positionalAudio, 0.1 );
+			positionalAudio.add( helper );
+
+			var helper2 = new PositionalAudioHelper( positionalAudio2, 0.1 );
+			positionalAudio2.add( helper2 );
+
+			var gltfLoader = new GLTFLoader();
+			gltfLoader.load( 'models/gltf/BoomBox/glTF-Binary/BoomBox.glb', function ( gltf ) {
+
+				boomBox = gltf.scene;
+				boomBox.position.set( -2, 0.2, 0 );
+				boomBox.scale.set( 20, 20, 20 );
+
+				boomBox.traverse( function ( object ) {
+
+					if ( object.isMesh ) {
+
+						object.material.envMap = reflectionCube;
+						object.geometry.rotateY( Math.PI );
+						object.castShadow = true;
+
+					}
+
+				} );
+
+				boomBox.add( positionalAudio );
+				scene.add( boomBox );
+
+			} );
+
+			gltfLoader.load( 'models/gltf/BoomBox/glTF-Binary/BoomBox.glb', function ( gltf ) {
+
+				boomBox2 = gltf.scene;
+				boomBox2.position.set( 2, 0.2, 0 );
+				boomBox2.scale.set( 20, 20, 20 );
+
+				boomBox2.traverse( function ( object ) {
+
+					if ( object.isMesh ) {
+
+						object.material.envMap = reflectionCube;
+						object.geometry.rotateY( Math.PI );
+						object.castShadow = true;
+
+					}
+
+				} );
+
+				boomBox2.add( positionalAudio2 );
+				scene.add( boomBox2 );
+
+			} );
+
+				gltfLoader.load( 'models/gltf/Parrot.glb', function ( gltf ) {
+
+				boomBox3 = gltf.scene;
+				boomBox3.position.set( 0, 3, 0 );
+				boomBox3.scale.set( 0.01, 0.01, 0.01 );
+
+				boomBox3.traverse( function ( object ) {
+
+					if ( object.isMesh ) {
+
+						object.material.envMap = reflectionCube;
+//						object.geometry.rotateY( Math.PI );
+						object.castShadow = true;
+
+					}
+
+				} );
+
+				boomBox3.add( positionalAudio3 );
+				scene.add( boomBox3 );
+
+			} );
+
+			// sound is damped behind this wall
+
+			var wallGeometry = new THREE.BoxBufferGeometry( 4, 1, 0.1 );
+			var wallMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, transparent: true, opacity: 0.5 } );
+
+			var wall = new THREE.Mesh( wallGeometry, wallMaterial );
+			wall.position.set( 0, 0.5, - 0.5 );
+			scene.add( wall );
+
+
+			//
+
+			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.outputEncoding = THREE.sRGBEncoding;
+//			renderer.shadowMap.enabled = true;
+//			renderer.setClearColor(0x000000, 0);
+//			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.domElement.style.position = 'absolute';
+
+			container.appendChild( renderer.domElement );
+
+
+//			controls = new TrackballControls( camera, renderer.domElement );
+//			controls.rotateSpeed = 4;
+
+
+			window.addEventListener( 'resize', onWindowResize, false );
+			animate();
+		}
+
+		function onWindowResize() {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize( window.innerWidth, window.innerHeight );
+
+		}
+		var boomBox_xv=0.1;
+		var boomBox_zv=0.1;
+
+		function animate() {
+			if(boomBox) 
+			{
+
+				if (boomBox.position.z > 3)
+					boomBox_zv = -0.05;
+				else if (boomBox.position.z < 0)
+					boomBox_zv = 0.05;
+	
+				boomBox.position.z += boomBox_zv;
+
+			}
+			if(boomBox3) 
+			{			
+				boomBox3.rotation.y+=0.005;
+			}
+
+			requestAnimationFrame( animate );
+			renderer.render( scene, camera );
+			controls.update();
+		}
+
+	</script>
+
+</body>
+</html>
